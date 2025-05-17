@@ -1,0 +1,681 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}My Account - ScootDr{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="mb-5">My Account</h1>
+        
+        {% if user.is_authenticated %}
+        <!-- Logged in view -->
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <!-- Account Sidebar -->
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Account Navigation</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="#profile" class="list-group-item list-group-item-action active" data-bs-toggle="tab">My Profile</a>
+                        <a href="#orders" class="list-group-item list-group-item-action" data-bs-toggle="tab">My Orders</a>
+                        <a href="#rentals" class="list-group-item list-group-item-action" data-bs-toggle="tab">My Rentals</a>
+                        <a href="#services" class="list-group-item list-group-item-action" data-bs-toggle="tab">Service History</a>
+                        <a href="#favorites" class="list-group-item list-group-item-action" data-bs-toggle="tab">Favorites</a>
+                        <a href="#settings" class="list-group-item list-group-item-action" data-bs-toggle="tab">Account Settings</a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'dashboard:index' %}" class="list-group-item list-group-item-action bg-light">Staff Dashboard</a>
+                        {% endif %}
+                        <a href="{% url 'landing:logout' %}" class="list-group-item list-group-item-action text-danger">Logout</a>
+                    </div>
+                </div>
+                
+                <!-- User Info Card -->
+                <div class="card mt-4">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <img src="{{ user.profile_image|default:'/static/images/default-avatar.png' }}" alt="{{ user.username }}" class="rounded-circle img-thumbnail" width="100">
+                        </div>
+                        <h5 class="card-title">{{ user.get_full_name|default:user.username }}</h5>
+                        <p class="card-text text-muted">Member since {{ user.date_joined|date:"F Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <!-- Profile Tab -->
+                    <div class="tab-pane fade show active" id="profile">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">My Profile</h5>
+                                <button class="btn btn-sm btn-primary" id="editProfileBtn">Edit Profile</button>
+                            </div>
+                            <div class="card-body">
+                                <div id="profileView">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <p><strong>Full Name:</strong> {{ user.get_full_name }}</p>
+                                            <p><strong>Email:</strong> {{ user.email }}</p>
+                                            <p><strong>Phone:</strong> {{ user.profile.phone|default:"Not provided" }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Address:</strong> {{ user.profile.address|default:"Not provided" }}</p>
+                                            <p><strong>City:</strong> {{ user.profile.city|default:"Not provided" }}</p>
+                                            <p><strong>Postal Code:</strong> {{ user.profile.postal_code|default:"Not provided" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="profileEdit" style="display: none;">
+                                    <form id="profileForm">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="firstName" class="form-label">First Name</label>
+                                                    <input type="text" class="form-control" id="firstName" value="{{ user.first_name }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="lastName" class="form-label">Last Name</label>
+                                                    <input type="text" class="form-control" id="lastName" value="{{ user.last_name }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="email" value="{{ user.email }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="phone" class="form-label">Phone</label>
+                                                    <input type="tel" class="form-control" id="phone" value="{{ user.profile.phone|default:'' }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="address" class="form-label">Address</label>
+                                                    <input type="text" class="form-control" id="address" value="{{ user.profile.address|default:'' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="city" class="form-label">City</label>
+                                                    <input type="text" class="form-control" id="city" value="{{ user.profile.city|default:'' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="postalCode" class="form-label">Postal Code</label>
+                                                    <input type="text" class="form-control" id="postalCode" value="{{ user.profile.postal_code|default:'' }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="profileImage" class="form-label">Profile Image</label>
+                                                    <input type="file" class="form-control" id="profileImage">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-secondary me-2" id="cancelEditBtn">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- My Scooters -->
+                        <div class="card mt-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">My Scooters</h5>
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addScooterModal">Add Scooter</button>
+                            </div>
+                            <div class="card-body">
+                                {% if user_scooters %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Make</th>
+                                                <th>Model</th>
+                                                <th>Year</th>
+                                                <th>VIN</th>
+                                                <th>Last Service</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for scooter in user_scooters %}
+                                            <tr>
+                                                <td>{{ scooter.make }}</td>
+                                                <td>{{ scooter.model }}</td>
+                                                <td>{{ scooter.year }}</td>
+                                                <td>{{ scooter.vin }}</td>
+                                                <td>{{ scooter.last_service|date:"F d, Y"|default:"Never" }}</td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <button type="button" class="btn btn-outline-primary">View</button>
+                                                        <button type="button" class="btn btn-outline-success">Service</button>
+                                                        <button type="button" class="btn btn-outline-danger">Remove</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4">
+                                    <p>You haven't added any scooters to your account yet.</p>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addScooterModal">Add Your First Scooter</button>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Orders Tab -->
+                    <div class="tab-pane fade" id="orders">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">My Orders</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if orders %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Order #</th>
+                                                <th>Date</th>
+                                                <th>Items</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in orders %}
+                                            <tr>
+                                                <td>{{ order.order_number }}</td>
+                                                <td>{{ order.date|date:"M d, Y" }}</td>
+                                                <td>{{ order.item_count }} item(s)</td>
+                                                <td>R{{ order.total }}</td>
+                                                <td><span class="badge bg-{{ order.status_color }}">{{ order.status }}</span></td>
+                                                <td>
+                                                    <a href="{% url 'landing:order_detail' order.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4">
+                                    <p>You haven't placed any orders yet.</p>
+                                    <a href="{% url 'landing:products' %}" class="btn btn-primary">Browse Products</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Rentals Tab -->
+                    <div class="tab-pane fade" id="rentals">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">My Rentals</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if rentals %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Rental #</th>
+                                                <th>Scooter</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for rental in rentals %}
+                                            <tr>
+                                                <td>{{ rental.rental_number }}</td>
+                                                <td>{{ rental.scooter_make }} {{ rental.scooter_model }}</td>
+                                                <td>{{ rental.start_date|date:"M d, Y" }}</td>
+                                                <td>{{ rental.end_date|date:"M d, Y" }}</td>
+                                                <td><span class="badge bg-{{ rental.status_color }}">{{ rental.status }}</span></td>
+                                                <td>
+                                                    <a href="{% url 'landing:rental_detail' rental.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4">
+                                    <p>You haven't rented any scooters yet.</p>
+                                    <a href="{% url 'landing:rent' %}" class="btn btn-primary">Browse Rental Options</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Service History Tab -->
+                    <div class="tab-pane fade" id="services">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Service History</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if services %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Service #</th>
+                                                <th>Scooter</th>
+                                                <th>Service Date</th>
+                                                <th>Service Type</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for service in services %}
+                                            <tr>
+                                                <td>{{ service.service_number }}</td>
+                                                <td>{{ service.scooter_make }} {{ service.scooter_model }}</td>
+                                                <td>{{ service.service_date|date:"M d, Y" }}</td>
+                                                <td>{{ service.service_type }}</td>
+                                                <td><span class="badge bg-{{ service.status_color }}">{{ service.status }}</span></td>
+                                                <td>
+                                                    <a href="{% url 'landing:service_detail' service.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4">
+                                    <p>You don't have any service records yet.</p>
+                                    <a href="{% url 'landing:service' %}" class="btn btn-primary">Book a Service</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Favorites Tab -->
+                    <div class="tab-pane fade" id="favorites">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">My Favorites</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if favorites %}
+                                <div class="row">
+                                    {% for product in favorites %}
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card h-100 product-card">
+                                            <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ product.name }}</h5>
+                                                <p class="card-text text-muted">{{ product.description|truncatechars:80 }}</p>
+                                                <p class="fw-bold">R{{ product.price }}</p>
+                                            </div>
+                                            <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                                                <a href="{% url 'landing:product_detail' product.id %}" class="btn btn-outline-primary">View Details</a>
+                                                <button class="btn btn-danger btn-sm" title="Remove from favorites"><i class="fas fa-heart-broken"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center py-4">
+                                    <p>You haven't added any products to your favorites yet.</p>
+                                    <a href="{% url 'landing:products' %}" class="btn btn-primary">Browse Products</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Settings Tab -->
+                    <div class="tab-pane fade" id="settings">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Account Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6 class="mb-3">Change Password</h6>
+                                <form id="passwordForm">
+                                    <div class="mb-3">
+                                        <label for="currentPassword" class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="currentPassword" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Change Password</button>
+                                </form>
+                                
+                                <hr class="my-4">
+                                
+                                <h6 class="mb-3">Communication Preferences</h6>
+                                <form id="preferencesForm">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                                        <label class="form-check-label" for="emailNotifications">
+                                            Receive email notifications
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="smsNotifications" checked>
+                                        <label class="form-check-label" for="smsNotifications">
+                                            Receive SMS notifications
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="marketingEmails" checked>
+                                        <label class="form-check-label" for="marketingEmails">
+                                            Receive marketing emails
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="newsletterSubscription" checked>
+                                        <label class="form-check-label" for="newsletterSubscription">
+                                            Subscribe to newsletter
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Preferences</button>
+                                </form>
+                                
+                                <hr class="my-4">
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-danger mb-0">Delete Account</h6>
+                                        <p class="small text-muted">This action cannot be undone</p>
+                                    </div>
+                                    <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete My Account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% else %}
+        <!-- Login/Register Section -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-md-6 p-4">
+                                <h3 class="mb-4">Login</h3>
+                                <form method="post" action="{% url 'landing:login' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="loginUsername" class="form-label">Username or Email</label>
+                                        <input type="text" class="form-control" id="loginUsername" name="username" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="loginPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="loginPassword" name="password" required>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="rememberMe" name="remember_me">
+                                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Login</button>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <a href="{% url 'landing:password_reset' %}">Forgot password?</a>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6 bg-light p-4">
+                                <h3 class="mb-4">Register</h3>
+                                <form method="post" action="{% url 'landing:register' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="registerUsername" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="registerUsername" name="username" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerEmail" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="registerEmail" name="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerPassword" class="form-label">Password</label>
+                                        <input type="password" class="form-control" id="registerPassword" name="password1" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="registerPasswordConfirm" class="form-label">Confirm Password</label>
+                                        <input type="password" class="form-control" id="registerPasswordConfirm" name="password2" required>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="termsAgree" required>
+                                        <label class="form-check-label" for="termsAgree">I agree to the <a href="{% url 'landing:terms' %}" target="_blank">terms and conditions</a></label>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">Register</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h4>Benefits of Creating an Account</h4>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="d-flex mb-3">
+                                    <div class="me-3 text-primary">
+                                        <i class="fas fa-history fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Order History</h5>
+                                        <p>Track your past and current orders easily</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-3">
+                                    <div class="me-3 text-primary">
+                                        <i class="fas fa-bookmark fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Save Favorites</h5>
+                                        <p>Create a wishlist of products you're interested in</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex mb-3">
+                                    <div class="me-3 text-primary">
+                                        <i class="fas fa-truck fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Faster Checkout</h5>
+                                        <p>Save your shipping and payment information</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex mb-3">
+                                    <div class="me-3 text-primary">
+                                        <i class="fas fa-tag fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5>Exclusive Offers</h5>
+                                        <p>Get access to member-only deals and promotions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Add Scooter Modal -->
+<div class="modal fade" id="addScooterModal" tabindex="-1" aria-labelledby="addScooterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addScooterModalLabel">Add a Scooter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addScooterForm">
+                    <div class="mb-3">
+                        <label for="scooterMake" class="form-label">Make</label>
+                        <input type="text" class="form-control" id="scooterMake" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scooterModel" class="form-label">Model</label>
+                        <input type="text" class="form-control" id="scooterModel" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scooterYear" class="form-label">Year</label>
+                        <input type="number" class="form-control" id="scooterYear" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scooterVin" class="form-label">VIN/Serial Number</label>
+                        <input type="text" class="form-control" id="scooterVin">
+                        <div class="form-text">If available, this helps us identify your scooter for service.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scooterColor" class="form-label">Color</label>
+                        <input type="text" class="form-control" id="scooterColor">
+                    </div>
+                    <div class="mb-3">
+                        <label for="scooterMileage" class="form-label">Current Mileage (km)</label>
+                        <input type="number" class="form-control" id="scooterMileage">
+                    </div>
+                    <div class="mb-3">
+                        <label for="scooterNotes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="scooterNotes" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveScooterBtn">Add Scooter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone.
+                </div>
+                <p>Deleting your account will remove all your personal information, order history, and other data from our system. You will no longer be able to access your account or any services associated with it.</p>
+                <div class="mb-3">
+                    <label for="deleteConfirmPassword" class="form-label">Please enter your password to confirm</label>
+                    <input type="password" class="form-control" id="deleteConfirmPassword" required>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="deleteConfirm" required>
+                    <label class="form-check-label" for="deleteConfirm">
+                        I understand that this action is permanent and cannot be undone
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete My Account</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Profile edit functionality
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const profileView = document.getElementById('profileView');
+        const profileEdit = document.getElementById('profileEdit');
+        
+        if (editProfileBtn) {
+            editProfileBtn.addEventListener('click', function() {
+                profileView.style.display = 'none';
+                profileEdit.style.display = 'block';
+            });
+        }
+        
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', function() {
+                profileView.style.display = 'block';
+                profileEdit.style.display = 'none';
+            });
+        }
+        
+        // Handle tab activation from URL hash
+        const url = document.location.toString();
+        if (url.includes('#')) {
+            const tabId = url.split('#')[1];
+            const tabLink = document.querySelector(`.list-group-item[href="#${tabId}"]`);
+            if (tabLink) {
+                document.querySelectorAll('.list-group-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                tabLink.classList.add('active');
+                
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.classList.remove('show', 'active');
+                });
+                const tabContent = document.getElementById(tabId);
+                if (tabContent) {
+                    tabContent.classList.add('show', 'active');
+                }
+            }
+        }
+        
+        // Listen for tab link clicks
+        document.querySelectorAll('.list-group-item').forEach(item => {
+            if (item.getAttribute('href') && item.getAttribute('href').startsWith('#')) {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.list-group-item').forEach(i => {
+                        i.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    const tabId = this.getAttribute('href').substring(1);
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('show', 'active');
+                    });
+                    document.getElementById(tabId).classList.add('show', 'active');
+                    
+                    // Update URL hash without page jump
+                    history.replaceState(null, null, `#${tabId}`);
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

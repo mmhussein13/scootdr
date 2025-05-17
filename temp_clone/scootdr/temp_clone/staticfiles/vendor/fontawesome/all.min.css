@@ -1,0 +1,162 @@
+/* Font Awesome CSS - with embedded styles to ensure consistent color rendering */
+@import url("fontawesome.min.css");
+
+/* Base icon styles */
+.fas, .far, .fab, .fa {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-family: "Font Awesome 6 Free", sans-serif;
+}
+
+/* Button-specific styling to maintain colors */
+.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+}
+.btn-primary i {
+  color: white !important;
+}
+
+.btn-success, .btn-success:hover, .btn-success:focus, .btn-success:active {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+}
+.btn-success i {
+  color: white !important;
+}
+
+.btn-info, .btn-info:hover, .btn-info:focus, .btn-info:active {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+}
+.btn-info i {
+  color: white !important;
+}
+
+.btn-warning, .btn-warning:hover, .btn-warning:focus, .btn-warning:active {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+}
+.btn-warning i {
+  color: #000 !important;
+}
+
+.btn-danger, .btn-danger:hover, .btn-danger:focus, .btn-danger:active {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+.btn-danger i {
+  color: white !important;
+}
+
+/* Text colors for icons */
+.text-primary, .text-primary i { color: #0d6efd !important; }
+.text-success, .text-success i { color: #198754 !important; }
+.text-info, .text-info i { color: #0dcaf0 !important; }
+.text-warning, .text-warning i { color: #ffc107 !important; }
+.text-danger, .text-danger i { color: #dc3545 !important; }
+
+/* Make sure all transitions are disabled for icon elements to prevent flashing */
+.fas, .far, .fab, .fa, 
+.btn i, .nav-link i, .card i, .alert i {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Override any :hover states that might change icon colors */
+*:hover > i, *:hover i {
+  color: inherit !important;
+}
+
+/* Common icon replacements for offline use */
+.fa-tachometer-alt::before,
+.fa-gauge::before {
+  content: "📊";
+}
+.fa-motorcycle::before {
+  content: "🛵";
+}
+.fa-cogs::before {
+  content: "⚙️";
+}
+.fa-store::before {
+  content: "🏪";
+}
+.fa-exchange-alt::before {
+  content: "🔄";
+}
+.fa-truck::before {
+  content: "🚚";
+}
+.fa-file-invoice-dollar::before {
+  content: "💵";
+}
+.fa-tools::before {
+  content: "🔧";
+}
+.fa-users::before {
+  content: "👥";
+}
+.fa-clipboard-list::before {
+  content: "📋";
+}
+.fa-chart-line::before {
+  content: "📈";
+}
+.fa-bell::before {
+  content: "🔔";
+}
+.fa-user-circle::before {
+  content: "👤";
+}
+.fa-eye::before {
+  content: "👁️";
+}
+.fa-edit::before {
+  content: "✏️";
+}
+.fa-trash::before {
+  content: "🗑️";
+}
+.fa-plus::before {
+  content: "➕";
+}
+.fa-print::before {
+  content: "🖨️";
+}
+.fa-file-excel::before {
+  content: "📊";
+}
+.fa-exclamation-triangle::before {
+  content: "⚠️";
+}
+.fa-exclamation-circle::before {
+  content: "⚠️";
+}
+.fa-money-bill-wave::before {
+  content: "💰";
+}
+.fa-smile::before {
+  content: "😊";
+}
+.fa-meh::before {
+  content: "😐";
+}
+.fa-frown::before {
+  content: "☹️";
+}
+.fa-chart-line::before {
+  content: "📈";
+}
+.fa-shopping-cart::before {
+  content: "🛒";
+}
+.fa-check-circle::before {
+  content: "✅";
+}
+.fa-boxes::before {
+  content: "📦";
+}

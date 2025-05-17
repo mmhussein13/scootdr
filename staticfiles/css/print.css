@@ -1,0 +1,110 @@
+/* Print styles for Scooter Rental Management System */
+
+@media print {
+  /* General print styles */
+  body {
+    background-color: white !important;
+    color: #000 !important;
+    font-size: 12pt;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Hide non-printable elements */
+  .sidebar, 
+  .navbar, 
+  .nav, 
+  .footer, 
+  .btn-group,
+  .non-printable,
+  .sticky-header,
+  .pagination,
+  .filter-controls {
+    display: none !important;
+  }
+  
+  /* Ensure all text is black and backgrounds are white */
+  * {
+    color: black !important;
+    background-color: white !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #ddd !important;
+  }
+  
+  /* Ensure tables have borders for clarity */
+  table, th, td {
+    border: 1px solid #ddd !important;
+  }
+  
+  th {
+    background-color: #f8f8f8 !important;
+    font-weight: bold;
+  }
+  
+  /* Ensure badges are still visible but with borders instead of colors */
+  .badge {
+    border: 1px solid #000 !important;
+    padding: 0.25em 0.5em !important;
+    font-weight: normal !important;
+  }
+  
+  /* Specific style overrides for inventory tables */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9 !important;
+  }
+  
+  /* Add page breaks where appropriate */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  /* Customize page margins */
+  @page {
+    margin: 1cm;
+  }
+  
+  /* Ensure links are underlined and show URLs */
+  a {
+    text-decoration: underline;
+  }
+  
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 90%;
+  }
+  
+  /* Exception for internal links */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+  
+  /* Ensure icons still display properly */
+  .fas, .far, .fab, .fa {
+    font-family: 'Arial', sans-serif !important;
+    color: black !important;
+  }
+  
+  /* Make container and content full width for printing */
+  .container, .container-fluid, .col, [class^="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  /* Ensure card contents are visible */
+  .card {
+    border: 1px solid #ddd !important;
+    margin-bottom: 1em !important;
+  }
+  
+  .card-header, .card-body, .card-footer {
+    padding: 10px !important;
+  }
+}

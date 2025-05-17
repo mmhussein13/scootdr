@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .delete-row {
+        color: #dc3545;
+        cursor: pointer;
+    }
+    .form-control-container input,
+    .form-control-container select,
+    .form-control-container textarea {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    .form-control-container textarea {
+        min-height: 100px;
+    }
+    
+    /* Table specific form control styling */
+    table .form-control-container input,
+    table .form-control-container select,
+    table .form-control-container textarea {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ title }}</h1>
+        <a href="{% url 'inventory:purchase_list' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Purchases
+        </a>
+    </div>
+
+    <!-- Messages are already shown in base.html -->
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form method="post" id="purchaseForm">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.invoice_number.id_for_label }}" class="form-label">Invoice Number:</label>
+                            {{ form.invoice_number.errors }}
+                            <div class="form-control-container">
+                                {{ form.invoice_number|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.supplier.id_for_label }}" class="form-label">Supplier:</label>
+                            {{ form.supplier.errors }}
+                            <div class="form-control-container">
+                                {{ form.supplier|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.invoice_date.id_for_label }}" class="form-label">Invoice Date:</label>
+                            {{ form.invoice_date.errors }}
+                            <div class="form-control-container">
+                                {{ form.invoice_date|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date:</label>
+                            {{ form.due_date.errors }}
+                            <div class="form-control-container">
+                                {{ form.due_date|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.total_amount.id_for_label }}" class="form-label">Total Amount (R):</label>
+                            {{ form.total_amount.errors }}
+                            <div class="form-control-container">
+                                {{ form.total_amount|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.amount_paid.id_for_label }}" class="form-label">Amount Paid (R):</label>
+                            {{ form.amount_paid.errors }}
+                            <div class="form-control-container">
+                                {{ form.amount_paid|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mb-3">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status.errors }}
+                            <div class="form-control-container">
+                                {{ form.status|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label for="{{ form.notes.id_for_label }}" class="form-label">Notes:</label>
+                    {{ form.notes.errors }}
+                    <div class="form-control-container">
+                        {{ form.notes|add_class:"form-control" }}
+                    </div>
+                </div>
+                
+                <hr>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Purchase Items</h4>
+                    <button type="button" id="add-item" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </div>
+                
+                <div id="purchase-items">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="purchase-items-table">
+                            <thead>
+                                <tr>
+                                    <th>Store</th>
+                                    <th>Part</th>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price (R)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for form in formset %}
+                                    <tr class="form-row">
+                                        {% for hidden_field in form.hidden_fields %}
+                                            {{ hidden_field }}
+                                        {% endfor %}
+                                        <td>
+                                            {{ form.store.errors }}
+                                            <div class="form-control-container">
+                                                {{ form.store }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ form.part.errors }}
+                                            <div class="form-control-container">
+                                                {{ form.part }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ form.description.errors }}
+                                            <div class="form-control-container">
+                                                {{ form.description }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ form.quantity.errors }}
+                                            <div class="form-control-container">
+                                                {{ form.quantity }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ form.unit_price.errors }}
+                                            <div class="form-control-container">
+                                                {{ form.unit_price }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if form.instance.pk %}
+                                                    {{ form.DELETE }}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-success add-row-btn" onclick="addNewRow(this)">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Invoice
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Function to remove an item row
+    function removeItemRow(button) {
+        // Find the current row
+        const row = button.closest('tr');
+        
+        // Check if there's a DELETE checkbox (for existing rows)
+        const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+        
+        if (deleteCheckbox) {
+            // Mark for deletion and hide the row
+            deleteCheckbox.checked = true;
+            row.style.display = 'none';
+        } else {
+            // If no DELETE checkbox (new form), just remove the row
+            row.remove();
+        }
+        
+        return false; // Prevent default
+    }
+    
+    // Function to add a new row when clicking the inline plus button
+    function addNewRow(button) {
+        const currentRow = button.closest('tr');
+        const tbody = currentRow.parentElement;
+        const newRow = currentRow.cloneNode(true);
+        
+        // Clear the input values in the new row
+        newRow.querySelectorAll('input').forEach(input => {
+            if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+                input.value = '';
+            }
+        });
+        
+        // Clear select values
+        newRow.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        // Update the form indices
+        const totalForms = document.querySelector('[name="purchaseitem_set-TOTAL_FORMS"]');
+        const currentIndex = parseInt(totalForms.value);
+        totalForms.value = currentIndex + 1;
+        
+        // Update the form IDs and names in the new row
+        newRow.querySelectorAll('[name^="purchaseitem_set-"]').forEach(element => {
+            const name = element.getAttribute('name');
+            const newName = name.replace(/purchaseitem_set-\d+/, `purchaseitem_set-${currentIndex}`);
+            element.setAttribute('name', newName);
+            
+            if (element.id) {
+                const id = element.getAttribute('id');
+                const newId = id.replace(/id_purchaseitem_set-\d+/, `id_purchaseitem_set-${currentIndex}`);
+                element.setAttribute('id', newId);
+            }
+        });
+        
+        // Add the new row after the current row
+        tbody.insertBefore(newRow, currentRow.nextSibling);
+        
+        // Re-attach event listeners to the new row
+        const partSelect = newRow.querySelector('[name$="-part"]');
+        const storeSelect = newRow.querySelector('[name$="-store"]');
+        
+        if (partSelect) {
+            partSelect.addEventListener('change', function() {
+                const selectedPart = this.value;
+                // Add any additional part selection logic here
+            });
+        }
+        
+        if (storeSelect) {
+            storeSelect.addEventListener('change', function() {
+                const selectedStore = this.value;
+                // Add any additional store selection logic here
+            });
+        }
+        
+        return false; // Prevent default button behavior
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const addItemBtn = document.getElementById('add-item');
+        const itemsTable = document.getElementById('purchase-items-table').querySelector('tbody');
+        
+        // Function to update form index numbers when items are added or removed
+        function updateFormIndexes() {
+            const forms = itemsTable.querySelectorAll('.form-row');
+            let formCount = forms.length;
+            
+            // Update the management form's count
+            document.getElementById('id_form-TOTAL_FORMS').value = formCount;
+            
+            // Update each form's index
+            forms.forEach((form, index) => {
+                updateElementIndex(form, 'form', index);
+            });
+        }
+        
+        // Function to update a single element's index 
+        function updateElementIndex(element, prefix, index) {
+            const idRegex = new RegExp(`(${prefix}-\\d+)`);
+            const nameRegex = new RegExp(`(${prefix}-\\d+)`);
+            
+            const findElements = element.querySelectorAll('input, select, textarea');
+            
+            findElements.forEach(el => {
+                if (el.getAttribute('id')) {
+                    el.setAttribute('id', el.getAttribute('id').replace(idRegex, `${prefix}-${index}`));
+                }
+                if (el.getAttribute('name')) {
+                    el.setAttribute('name', el.getAttribute('name').replace(nameRegex, `${prefix}-${index}`));
+                }
+            });
+        }
+        
+        // Add new item row
+        addItemBtn.addEventListener('click', function() {
+            // Get the current form count
+            const formCount = parseInt(document.getElementById('id_form-TOTAL_FORMS').value);
+            
+            // Clone the first form row
+            const firstForm = itemsTable.querySelector('.form-row');
+            const newForm = firstForm.cloneNode(true);
+            
+            // Clear input values in the new form
+            newForm.querySelectorAll('input:not([type=hidden]), select, textarea').forEach(input => {
+                // Skip the DELETE checkbox
+                if (input.type === 'checkbox' && input.classList.contains('delete')) {
+                    return;
+                }
+                input.value = '';
+            });
+            
+            // Update the form index for the new row
+            updateElementIndex(newForm, 'form', formCount);
+            
+            // Add the new row to the table
+            itemsTable.appendChild(newForm);
+            
+            // Update the form count
+            document.getElementById('id_form-TOTAL_FORMS').value = formCount + 1;
+            
+            // Add event listeners to the new buttons
+            setupDeleteButtonListeners();
+            setupAddNewRowButtonListeners();
+            
+            // Setup part select change handlers for the new row
+            setupPartSelectHandlers();
+        });
+        
+        // Function to handle delete row click
+        function setupDeleteButtonListeners() {
+            document.querySelectorAll('.delete-row').forEach(button => {
+                button.removeEventListener('click', handleDeleteClick);
+                button.addEventListener('click', handleDeleteClick);
+            });
+        }
+        
+        function handleDeleteClick(e) {
+            const row = e.currentTarget.closest('tr');
+            const deleteCheckbox = row.querySelector('input[type=checkbox][name$=DELETE]');
+            
+            if (deleteCheckbox) {
+                // If there's a DELETE checkbox (existing item), check it
+                deleteCheckbox.checked = true;
+                row.style.display = 'none';
+            } else {
+                // Otherwise just remove the row (new item)
+                row.remove();
+                // Update form indexes
+                updateFormIndexes();
+            }
+        }
+        
+        // Function to handle add new row click
+        function setupAddNewRowButtonListeners() {
+            document.querySelectorAll('.add-new-row').forEach(button => {
+                button.removeEventListener('click', handleAddNewRowClick);
+                button.addEventListener('click', handleAddNewRowClick);
+            });
+        }
+        
+        function handleAddNewRowClick(e) {
+            // Get the current form count
+            const formCount = parseInt(document.getElementById('id_form-TOTAL_FORMS').value);
+            
+            // Clone the current row
+            const currentRow = e.currentTarget.closest('tr');
+            const newRow = currentRow.cloneNode(true);
+            
+            // Clear input values in the new form
+            newRow.querySelectorAll('input:not([type=hidden]), select, textarea').forEach(input => {
+                // Skip the DELETE checkbox
+                if (input.type === 'checkbox' && input.classList.contains('delete')) {
+                    return;
+                }
+                input.value = '';
+            });
+            
+            // Update the form index for the new row
+            updateElementIndex(newRow, 'form', formCount);
+            
+            // Insert the new row after the current row
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+            
+            // Update the form count
+            document.getElementById('id_form-TOTAL_FORMS').value = formCount + 1;
+            
+            // Add event listeners to the new buttons
+            setupDeleteButtonListeners();
+            setupAddNewRowButtonListeners();
+            
+            // Setup part select change handlers for the new row
+            setupPartSelectHandlers();
+        }
+        
+        // Function to auto-fill part description and unit price when a part is selected
+        function setupPartSelectHandlers() {
+            document.querySelectorAll('.part-select').forEach(select => {
+                select.removeEventListener('change', handlePartSelectChange);
+                select.addEventListener('change', handlePartSelectChange);
+            });
+        }
+        
+        function handlePartSelectChange(e) {
+            const partSelect = e.target;
+            const row = partSelect.closest('tr');
+            const descriptionInput = row.querySelector('input[name$=description]');
+            const unitPriceInput = row.querySelector('input[name$=unit_price]');
+            
+            const selectedOption = partSelect.options[partSelect.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                // Make an AJAX request to get part details
+                fetch(`/inventory/api/parts/${selectedOption.value}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.name) {
+                            descriptionInput.value = data.name;
+                        }
+                        if (data.unit_price) {
+                            unitPriceInput.value = data.unit_price;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching part details:', error));
+            }
+        }
+        
+        // Store change handler to filter parts by store
+        function setupStoreSelectHandlers() {
+            document.querySelectorAll('[name$=store]').forEach(select => {
+                select.removeEventListener('change', handleStoreSelectChange);
+                select.addEventListener('change', handleStoreSelectChange);
+            });
+        }
+        
+        function handleStoreSelectChange(e) {
+            const storeSelect = e.target;
+            const row = storeSelect.closest('tr');
+            const partSelect = row.querySelector('[name$=part]');
+            const storeId = storeSelect.value;
+            
+            if (storeId) {
+                // Make an AJAX request to get parts for this store
+                fetch(`/inventory/api/stores/${storeId}/parts/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear existing options
+                        partSelect.innerHTML = '<option value="">---------</option>';
+                        
+                        // Add new options
+                        data.forEach(part => {
+                            const option = document.createElement('option');
+                            option.value = part.id;
+                            option.textContent = `${part.part_number} - ${part.name}`;
+                            partSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching parts for store:', error));
+            }
+        }
+        
+        // Set up initial delete button listeners
+        setupDeleteButtonListeners();
+        
+        // Set up part select change handlers
+        setupPartSelectHandlers();
+        
+        // Set up store select change handlers
+        setupStoreSelectHandlers();
+    });
+</script>
+{% endblock %}

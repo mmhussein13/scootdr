@@ -1,0 +1,399 @@
+{% extends 'base.html' %}
+{% load analytics_extras %}
+
+{% block title %}Analytics Dashboard - Scooter Rental Management System{% endblock %}
+
+{% block page_title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Dashboard header with user dashboard selection -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i> 
+                        {% if default_dashboard %}
+                            {{ default_dashboard.name }}
+                        {% else %}
+                            System Dashboard
+                        {% endif %}
+                    </h5>
+                    <div>
+                        {% if user_dashboards %}
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-tachometer-alt me-1"></i> My Dashboards
+                                </button>
+                                <ul class="dropdown-menu">
+                                    {% for dashboard in user_dashboards %}
+                                        <li>
+                                            <a class="dropdown-item {% if dashboard.id == default_dashboard.id %}active{% endif %}" 
+                                               href="#">
+                                                {{ dashboard.name }}
+                                                {% if dashboard.is_default %}
+                                                    <i class="fas fa-star text-warning ms-1"></i>
+                                                {% endif %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-plus me-1"></i> Create New Dashboard
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                        
+                        {% if default_dashboard %}
+                            <a href="#" class="btn btn-sm btn-outline-light">
+                                <i class="fas fa-edit me-1"></i> Edit Layout
+                            </a>
+                        {% else %}
+                            <a href="#" class="btn btn-sm btn-outline-light">
+                                <i class="fas fa-plus me-1"></i> Create Dashboard
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if not default_dashboard %}
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Welcome to Analytics!</strong> 
+                            You haven't created any custom dashboards yet. Create your first dashboard to start tracking the metrics that matter to you.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    {% if default_dashboard and widgets %}
+        <!-- Dashboard widgets grid -->
+        <div class="row">
+            {% for widget in widgets %}
+                <div class="col-md-{{ widget.width|mul:3 }} mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">{{ widget.title }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if widget.widget_type == 'chart' %}
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="chart-{{ widget.id }}"></canvas>
+                                </div>
+                            {% elif widget.widget_type == 'stats' %}
+                                <div class="row">
+                                    <!-- Sample statistics display -->
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-success text-white">
+                                            <div class="card-body text-center">
+                                                <h3 class="mb-0">42</h3>
+                                                <p class="mb-0">Active Rentals</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-info text-white">
+                                            <div class="card-body text-center">
+                                                <h3 class="mb-0">18</h3>
+                                                <p class="mb-0">Available Scooters</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-warning text-dark">
+                                            <div class="card-body text-center">
+                                                <h3 class="mb-0">5</h3>
+                                                <p class="mb-0">Pending Maintenance</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card bg-danger text-white">
+                                            <div class="card-body text-center">
+                                                <h3 class="mb-0">3</h3>
+                                                <p class="mb-0">Low Stock Items</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif widget.widget_type == 'table' %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Sample table data -->
+                                            <tr>
+                                                <td>001</td>
+                                                <td>Item 1</td>
+                                                <td>$100.00</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>002</td>
+                                                <td>Item 2</td>
+                                                <td>$150.00</td>
+                                                <td><span class="badge bg-warning text-dark">Pending</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>003</td>
+                                                <td>Item 3</td>
+                                                <td>$75.00</td>
+                                                <td><span class="badge bg-danger">Inactive</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% elif widget.widget_type == 'alert' %}
+                                <!-- Low stock widget -->
+                                {% include 'analytics/widgets/low_stock_widget.html' with low_stock_items=low_stock_items %}
+                            {% elif widget.widget_type == 'kpi' %}
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h2 class="display-4 mb-0">$4,250</h2>
+                                        <p class="text-muted mb-0">Weekly Revenue</p>
+                                    </div>
+                                    <div class="text-success">
+                                        <i class="fas fa-arrow-up me-1"></i>
+                                        <span>12.5%</span>
+                                    </div>
+                                </div>
+                                <div class="progress mt-3" style="height: 10px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <p class="text-muted mt-2 mb-0">
+                                    <small>75% of weekly target</small>
+                                </p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-light d-flex justify-content-between">
+                            <small class="text-muted">Last updated: May 8, 2025</small>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Default widgets when no custom dashboard -->
+        <div class="row">
+            <!-- Low Stock Widget -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Low Stock Alerts</h5>
+                    </div>
+                    <div class="card-body">
+                        {% include 'analytics/widgets/low_stock_widget.html' %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity Widget -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-clock me-2"></i> Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item p-3">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">New Rental #R1234</h6>
+                                    <small>3 hours ago</small>
+                                </div>
+                                <p class="mb-1">Customer: John Doe | Scooter: Vespa Primavera</p>
+                                <small class="text-muted">Created by: Admin User</small>
+                            </div>
+                            <div class="list-group-item p-3">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Completed Service #S789</h6>
+                                    <small>5 hours ago</small>
+                                </div>
+                                <p class="mb-1">Scooter: Honda PCX | Service: Regular Maintenance</p>
+                                <small class="text-muted">Technician: Jane Smith</small>
+                            </div>
+                            <div class="list-group-item p-3">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">Inventory Restocked</h6>
+                                    <small>Yesterday</small>
+                                </div>
+                                <p class="mb-1">10 items added to Downtown Store</p>
+                                <small class="text-muted">By: Inventory Manager</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light text-center">
+                        <a href="#" class="text-decoration-none">View All Activity</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sales Overview -->
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> Sales Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h2 class="display-4 mb-0">$14,500</h2>
+                                        <p class="text-muted mb-0">Monthly Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h2 class="display-4 mb-0">45</h2>
+                                        <p class="text-muted mb-0">New Rentals</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h2 class="display-4 mb-0">18</h2>
+                                        <p class="text-muted mb-0">New Customers</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-light">
+                                    <div class="card-body text-center">
+                                        <h2 class="display-4 mb-0">$322</h2>
+                                        <p class="text-muted mb-0">Avg Rental Value</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="monthlySalesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light text-center">
+                        <a href="#" class="text-decoration-none">
+                            <i class="fas fa-file-alt me-1"></i> Detailed Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Chart setup would go here
+    // This is just a placeholder - in a real implementation, data would come from the backend
+    document.addEventListener('DOMContentLoaded', function() {
+        // Only initialize charts if canvas elements exist
+        if (document.getElementById('monthlySalesChart')) {
+            const ctx = document.getElementById('monthlySalesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Monthly Sales ($)',
+                        data: [12500, 11000, 14500, 13800, 15200, 14500],
+                        backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 2,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize all widget charts if they exist
+        document.querySelectorAll('[id^="chart-"]').forEach(function(canvas) {
+            const ctx = canvas.getContext('2d');
+            // This would be customized based on the widget type
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        label: 'Sample Data',
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
+                            'rgba(255, 206, 86, 0.5)',
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(153, 102, 255, 0.5)',
+                            'rgba(255, 159, 64, 0.5)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

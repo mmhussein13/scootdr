@@ -1,0 +1,187 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Scooter Rental Management System{% endblock %}</title>
+    <!-- Bootstrap CSS - with offline fallback -->
+    <link href="{% static 'vendor/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- Font Awesome Icons - CDN (Using v6.4.0 for better icon support) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Icon Colors CSS (ensures icons stay colored) -->
+    <link href="{% static 'css/icon-colors.css' %}" rel="stylesheet">
+    <!-- Mobile-specific CSS -->
+    <link href="{% static 'css/mobile.css' %}" rel="stylesheet">
+    <!-- Print CSS -->
+    <link href="{% static 'css/print.css' %}" rel="stylesheet" media="print">
+    {% block extra_css %}{% endblock %}
+</head>
+<body data-bs-theme="dark">
+    <!-- Mobile Menu Toggle Button -->
+    <button class="btn mobile-toggle d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse" id="sidebarMenu">
+                <div class="position-sticky pt-3">
+                    <!-- Mobile Header with Close Button -->
+                    <div class="mobile-nav-header d-md-none">
+                        <span class="fs-5 fw-semibold">Menu</span>
+                        <button type="button" class="mobile-close" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-center mb-4">
+                        <img src="{% static 'images/scoot_dr_logo.jpeg' %}" alt="Scoot Dr. Logo" class="circular-logo">
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'dashboard:index' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/inventory/scooter' in request.path %}active{% endif %}" href="{% url 'inventory:scooter_list' %}">
+                                <i class="fas fa-motorcycle me-2"></i> Scooters
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/inventory/parts' in request.path %}active{% endif %}" href="{% url 'inventory:parts_list' %}">
+                                <i class="fas fa-cogs me-2"></i> Parts Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/inventory/store' in request.path %}active{% endif %}" href="{% url 'inventory:store_list' %}">
+                                <i class="fas fa-store me-2"></i> Stores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/inventory/stock-transfer' in request.path %}active{% endif %}" href="{% url 'inventory:stock_transfer_list' %}">
+                                <i class="fas fa-exchange-alt me-2"></i> Stock Transfers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/inventory/supplier' in request.path %}active{% endif %}" href="{% url 'inventory:supplier_list' %}">
+                                <i class="fas fa-truck me-2"></i> Suppliers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/inventory/purchase' in request.path %}active{% endif %}" href="{% url 'inventory:purchase_list' %}">
+                                <i class="fas fa-file-invoice-dollar me-2"></i> Purchases
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/service/job-card' in request.path %}active{% endif %}" href="{% url 'service:job_card_list' %}">
+                                <i class="fas fa-tools me-2"></i> Service / Job Cards
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/customers' in request.path %}active{% endif %}" href="{% url 'customers:customer_list' %}">
+                                <i class="fas fa-users me-2"></i> Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/customers/rentals' in request.path %}active{% endif %}" href="{% url 'customers:rental_list' %}">
+                                <i class="fas fa-clipboard-list me-2"></i> Rentals
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/analytics' in request.path %}active{% endif %}" href="{% url 'analytics:analytics_dashboard' %}">
+                                <i class="fas fa-chart-line me-2"></i> Analytics
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {% if '/analytics/alerts' in request.path %}active{% endif %}" href="{% url 'analytics:alerts_dashboard' %}">
+                                <i class="fas fa-bell me-2"></i> Alerts
+                                <span class="badge rounded-pill bg-danger">
+                                    <span id="alertCountBadge">!</span>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr>
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle fs-4 me-2"></i>
+                            <strong>{{ request.user.username }}</strong>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                            <li><a class="dropdown-item" href="{% url 'settings' %}">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard:custom_logout' %}">Sign out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        {% block page_actions %}{% endblock %}
+                    </div>
+                </div>
+
+                <!-- Alert Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Page Content -->
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper - with offline fallback -->
+    <script src="{% static 'vendor/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <!-- Script for auto logout after 5 minutes -->
+    <script>
+        let timer;
+    
+        function resetTimer() {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                window.location.href = "{% url 'logout' %}";
+            }, 300000); // 5 minutes
+        }
+    
+        // Reset on user activity
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onclick = resetTimer;
+        document.onscroll = resetTimer;
+    </script>
+    
+    <script>
+        // Initialize all dropdowns
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+            var dropdownList = dropdownElementList.map(function(dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl);
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

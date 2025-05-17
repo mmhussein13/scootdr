@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Payment Methods{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'customers:customer_detail' pk=customer.pk %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Customer
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    {% if payment_method %}
+                        Update Payment Method for {{ customer.get_full_name }}
+                    {% else %}
+                        Add Payment Method for {{ customer.get_full_name }}
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.payment_type.id_for_label }}" class="form-label">Payment Type:</label>
+                        {{ form.payment_type }}
+                        {% if form.payment_type.errors %}
+                            <div class="text-danger">{{ form.payment_type.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-details">
+                        <div class="mb-3">
+                            <label for="{{ form.card_number.id_for_label }}" class="form-label">Card Number (last 4 digits only):</label>
+                            {{ form.card_number }}
+                            {% if form.card_number.errors %}
+                                <div class="text-danger">{{ form.card_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.card_holder_name.id_for_label }}" class="form-label">Card Holder Name:</label>
+                            {{ form.card_holder_name }}
+                            {% if form.card_holder_name.errors %}
+                                <div class="text-danger">{{ form.card_holder_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.expiry_date.id_for_label }}" class="form-label">Expiry Date (MM/YYYY):</label>
+                            {{ form.expiry_date }}
+                            {% if form.expiry_date.errors %}
+                                <div class="text-danger">{{ form.expiry_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.is_default }}
+                            <label class="form-check-label" for="{{ form.is_default.id_for_label }}">
+                                Set as Default Payment Method
+                            </label>
+                            {% if form.is_default.errors %}
+                                <div class="text-danger">{{ form.is_default.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.is_active }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                Active Payment Method
+                            </label>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger">{{ form.is_active.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Payment Method
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap classes to form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('input, select, textarea');
+        formControls.forEach(function(element) {
+            if (!element.classList.contains('form-control') && !element.classList.contains('form-select') && !element.classList.contains('form-check-input')) {
+                if (element.tagName === 'SELECT') {
+                    element.classList.add('form-select');
+                } else if (element.type === 'checkbox') {
+                    element.classList.add('form-check-input');
+                } else if (element.type !== 'hidden' && element.type !== 'radio') {
+                    element.classList.add('form-control');
+                }
+            }
+        });
+        
+        // Show/hide card details based on payment type
+        const paymentTypeSelect = document.querySelector('select[name="payment_type"]');
+        const cardDetails = document.querySelector('.card-details');
+        
+        if (paymentTypeSelect && cardDetails) {
+            const toggleCardDetails = function() {
+                const paymentType = paymentTypeSelect.value;
+                if (paymentType === 'credit_card' || paymentType === 'debit_card') {
+                    cardDetails.style.display = 'block';
+                } else {
+                    cardDetails.style.display = 'none';
+                }
+            };
+            
+            // Initial state
+            toggleCardDetails();
+            
+            // On change
+            paymentTypeSelect.addEventListener('change', toggleCardDetails);
+        }
+    });
+</script>
+{% endblock %}

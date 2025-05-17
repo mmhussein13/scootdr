@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Scooter Rental System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Rental Confirmation</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success mb-4">
+                    <h5 class="alert-heading">Booking Successful!</h5>
+                    <p>Your rental request has been received. Your reservation reference is: <strong>{{ rental['reference_id'] }}</strong></p>
+                    <p class="mb-0">Please keep this reference for your records.</p>
+                </div>
+                
+                <h5>Rental Details</h5>
+                <div class="table-responsive mb-4">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 30%">Scooter</th>
+                                <td>{{ rental['category_name'] }} ({{ rental['description'] }})</td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td>{{ rental['start_date'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>End Date</th>
+                                <td>{{ rental['end_date'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Total Price</th>
+                                <td>R{{ rental['total_price'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    {% if rental['status'] == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif rental['status'] == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                    {% elif rental['status'] == 'completed' %}
+                                        <span class="badge bg-info">Completed</span>
+                                    {% elif rental['status'] == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading">Next Steps</h5>
+                    <p>Our team will process your reservation and confirm availability. You will receive a confirmation email shortly.</p>
+                    <p class="mb-0">For any questions, please contact our support team.</p>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+                    <a href="{{ url_for('rentals') }}" class="btn btn-outline-primary">Make Another Reservation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

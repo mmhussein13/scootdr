@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Parts Inventory{% endblock %}
+
+{% block page_title %}Parts Inventory{% endblock %}
+
+{% block page_actions %}
+<div class="sticky-header">
+    <div class="btn-group" role="group">
+        <a href="{% url 'inventory:parts_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Part
+        </a>
+        <a href="{% url 'inventory:parts_list' %}?export=excel" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Export to Excel
+        </a>
+        <button onclick="toggleLowStock();" class="btn btn-warning" id="stockFilterBtn">
+            <i class="fas fa-filter"></i> Show Low Stock Only
+        </button>
+    </div>
+
+    <!-- Store Filter and Search -->
+    <div class="mt-3">
+        <form id="storeFilterForm" method="get" action="{% url 'inventory:parts_list' %}" class="d-flex align-items-center flex-wrap">
+            <div class="d-flex align-items-center me-3 mb-2">
+                <label for="storeFilter" class="form-label mb-0 me-2">Filter by Store:</label>
+                <select id="storeFilter" name="store" class="form-select">
+                    <option value="">All Stores</option>
+                    {% for store in stores %}
+                        <option value="{{ store.id }}" {% if selected_store_id == store.id|stringformat:"i" %}selected{% endif %}>
+                            {{ store.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="d-flex align-items-center mb-2">
+                <label for="search-input" class="form-label mb-0 me-2">Search:</label>
+                <input type="text" id="search-input" name="search" class="form-control" 
+                       placeholder="Part # or Name" value="{{ search_query }}" style="min-width: 200px;">
+                <button type="submit" class="btn btn-sm btn-primary ms-2">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <!-- Preserve current sort if any -->
+            {% if current_sort %}
+                <input type="hidden" name="sort" value="{{ current_sort }}">
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleLowStock() {
+        // Select rows that don't have cream background color (which are non-low-stock items)
+        const rows = document.querySelectorAll('tbody tr:not([style*="background-color: #FFF8E1"])');
+        const button = document.getElementById('stockFilterBtn');
+        const isFiltered = button.getAttribute('data-filtered') === 'true';
+        
+        if (isFiltered) {
+            // Show all rows
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            button.innerHTML = '<i class="fas fa-filter"></i> Show Low Stock Only';
+            button.setAttribute('data-filtered', 'false');
+        } else {
+            // Hide rows that aren't low stock
+            rows.forEach(row => {
+                row.style.display = 'none';
+            });
+            button.innerHTML = '<i class="fas fa-filter"></i> Show All Stock';
+            button.setAttribute('data-filtered', 'true');
+        }
+    }
+    
+    // Function to preserve sorting when clicking on other filter buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get current sort parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSort = urlParams.get('sort');
+        
+        // If sort parameter exists, add it to the filter button
+        if (currentSort) {
+            const filterBtn = document.getElementById('stockFilterBtn');
+            filterBtn.addEventListener('click', function(e) {
+                // The toggle function is still called normally
+                // This just adds a listener to preserve the current sort
+                console.log("Sort is preserved: " + currentSort);
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="sticky-table-header">
+                    <tr>
+                        <th>
+                            <a href="{% url 'inventory:parts_list' %}?sort={% if current_sort == 'part_number' %}-part_number{% else %}part_number{% endif %}" class="text-decoration-none text-white">
+                                Part # 
+                                {% if current_sort == 'part_number' %}
+                                    <i class="fas fa-sort-down ms-1"></i>
+                                {% elif current_sort == '-part_number' %}
+                                    <i class="fas fa-sort-up ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-sort ms-1 text-muted"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{% url 'inventory:parts_list' %}?sort={% if current_sort == 'name' %}-name{% else %}name{% endif %}" class="text-decoration-none text-white">
+                                Name
+                                {% if current_sort == 'name' %}
+                                    <i class="fas fa-sort-down ms-1"></i>
+                                {% elif current_sort == '-name' %}
+                                    <i class="fas fa-sort-up ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-sort ms-1 text-muted"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{% url 'inventory:parts_list' %}?sort={% if current_sort == 'category' %}-category{% else %}category{% endif %}" class="text-decoration-none text-white">
+                                Category
+                                {% if current_sort == 'category' %}
+                                    <i class="fas fa-sort-down ms-1"></i>
+                                {% elif current_sort == '-category' %}
+                                    <i class="fas fa-sort-up ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-sort ms-1 text-muted"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{% url 'inventory:parts_list' %}?sort={% if current_sort == 'current_stock' %}-current_stock{% else %}current_stock{% endif %}" class="text-decoration-none text-white">
+                                Current Stock
+                                {% if current_sort == 'current_stock' %}
+                                    <i class="fas fa-sort-down ms-1"></i>
+                                {% elif current_sort == '-current_stock' %}
+                                    <i class="fas fa-sort-up ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-sort ms-1 text-muted"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{% url 'inventory:parts_list' %}?sort={% if current_sort == 'reorder_level' %}-reorder_level{% else %}reorder_level{% endif %}" class="text-decoration-none text-white">
+                                Reorder Level
+                                {% if current_sort == 'reorder_level' %}
+                                    <i class="fas fa-sort-down ms-1"></i>
+                                {% elif current_sort == '-reorder_level' %}
+                                    <i class="fas fa-sort-up ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-sort ms-1 text-muted"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="{% url 'inventory:parts_list' %}?sort={% if current_sort == 'unit_price' %}-unit_price{% else %}unit_price{% endif %}" class="text-decoration-none text-white">
+                                Unit Price
+                                {% if current_sort == 'unit_price' %}
+                                    <i class="fas fa-sort-down ms-1"></i>
+                                {% elif current_sort == '-unit_price' %}
+                                    <i class="fas fa-sort-up ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-sort ms-1 text-muted"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>Store</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if parts %}
+                        {% for part in parts %}
+                            <tr {% if part.current_stock < part.reorder_level %}style="background-color: #FFF8E1;"{% elif part.current_stock == part.reorder_level %}style="background-color: #FFF8E1;"{% endif %}>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger fw-bold{% elif part.current_stock == part.reorder_level %}text-danger fw-bold{% endif %}">{{ part.part_number }}</td>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger fw-bold{% elif part.current_stock == part.reorder_level %}text-danger fw-bold{% endif %}">{{ part.name }}</td>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger{% elif part.current_stock == part.reorder_level %}text-danger{% endif %}">{{ part.category }}</td>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger fw-bold{% elif part.current_stock == part.reorder_level %}text-danger fw-bold{% endif %}">
+                                    {% if part.current_stock == part.current_stock|floatformat:0 %}
+                                        {{ part.current_stock|floatformat:0 }}
+                                    {% else %}
+                                        {{ part.current_stock|floatformat:2 }}
+                                    {% endif %}
+                                </td>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger{% elif part.current_stock == part.reorder_level %}text-danger{% endif %}">
+                                    {% if part.reorder_level == part.reorder_level|floatformat:0 %}
+                                        {{ part.reorder_level|floatformat:0 }}
+                                    {% else %}
+                                        {{ part.reorder_level|floatformat:2 }}
+                                    {% endif %}
+                                </td>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger{% elif part.current_stock == part.reorder_level %}text-danger{% endif %}">R{{ part.unit_price }}</td>
+                                <td class="{% if part.current_stock < part.reorder_level %}text-danger{% elif part.current_stock == part.reorder_level %}text-danger{% endif %}">{{ part.store.name }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        {% if request.user.is_superuser %}
+                                        <a href="{% url 'inventory:parts_update' pk=part.pk %}" class="btn btn-warning" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'inventory:parts_delete' pk=part.pk %}" class="btn btn-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        {% else %}
+                                        <button class="btn btn-secondary" disabled title="No Access">
+                                            <i class="fas fa-lock"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">No parts found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+            
+            <!-- Search Results Summary -->
+            <div class="mt-3 text-muted">
+                <small>Showing {{ parts|length }} part{% if parts|length != 1 %}s{% endif %}{% if search_query %} matching "{{ search_query }}"{% endif %}</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

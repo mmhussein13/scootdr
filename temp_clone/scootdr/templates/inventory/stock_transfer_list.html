@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Transfers{% endblock %}
+
+{% block page_title %}Stock Transfers{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group" role="group">
+    <a href="{% url 'inventory:stock_transfer_create' %}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> New Stock Transfer
+    </a>
+    <a href="{% url 'inventory:stock_transfer_list' %}?export=excel" class="btn btn-success">
+        <i class="fas fa-file-excel"></i> Export to Excel
+    </a>
+    <button onclick="toggleCompletedOnly();" class="btn btn-secondary" id="completedFilterBtn">
+        <i class="fas fa-filter"></i> Show Completed Only
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleCompletedOnly() {
+        const rows = document.querySelectorAll('tbody tr');
+        const button = document.getElementById('completedFilterBtn');
+        const isFiltered = button.getAttribute('data-filtered') === 'true';
+        
+        if (isFiltered) {
+            // Show all rows
+            rows.forEach(row => {
+                row.style.display = '';
+            });
+            button.innerHTML = '<i class="fas fa-filter"></i> Show Completed Only';
+            button.setAttribute('data-filtered', 'false');
+        } else {
+            // Hide rows that aren't completed
+            rows.forEach(row => {
+                const statusBadge = row.querySelector('.badge');
+                if (statusBadge && !statusBadge.textContent.trim().includes('Completed')) {
+                    row.style.display = 'none';
+                }
+            });
+            button.innerHTML = '<i class="fas fa-filter"></i> Show All Transfers';
+            button.setAttribute('data-filtered', 'true');
+        }
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Transfer #</th>
+                        <th>Part</th>
+                        <th>Quantity</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if transfers %}
+                        {% for transfer in transfers %}
+                            <tr>
+                                <td>{{ transfer.transfer_number }}</td>
+                                <td>{{ transfer.part.name }}</td>
+                                <td>
+                                    {% if transfer.quantity == transfer.quantity|floatformat:0 %}
+                                        {{ transfer.quantity|floatformat:0 }}
+                                    {% else %}
+                                        {{ transfer.quantity|floatformat:2 }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ transfer.source_store.name }}</td>
+                                <td>{{ transfer.destination_store.name }}</td>
+                                <td>{{ transfer.transfer_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="badge bg-{% if transfer.status == 'completed' %}success{% elif transfer.status == 'in_transit' %}primary{% elif transfer.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                        {{ transfer.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{% url 'inventory:stock_transfer_update' pk=transfer.pk %}" class="btn btn-warning" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'inventory:stock_transfer_delete' pk=transfer.pk %}" class="btn btn-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">No stock transfers found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

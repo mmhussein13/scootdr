@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Scooter Inventory{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'inventory:scooter_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Scooters
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.vin.id_for_label }}" class="form-label">VIN/Serial Number:</label>
+                            {{ form.vin }}
+                            {% if form.vin.errors %}
+                                <div class="text-danger">{{ form.vin.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.license_number.id_for_label }}" class="form-label">License Number:</label>
+                            {{ form.license_number }}
+                            {% if form.license_number.errors %}
+                                <div class="text-danger">{{ form.license_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.store.id_for_label }}" class="form-label">Store:</label>
+                            {{ form.store }}
+                            {% if form.store.errors %}
+                                <div class="text-danger">{{ form.store.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.make.id_for_label }}" class="form-label">Make:</label>
+                            {{ form.make }}
+                            {% if form.make.errors %}
+                                <div class="text-danger">{{ form.make.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.model.id_for_label }}" class="form-label">Model:</label>
+                            {{ form.model }}
+                            {% if form.model.errors %}
+                                <div class="text-danger">{{ form.model.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.year.id_for_label }}" class="form-label">Year:</label>
+                            {{ form.year }}
+                            {% if form.year.errors %}
+                                <div class="text-danger">{{ form.year.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.color.id_for_label }}" class="form-label">Color:</label>
+                            {{ form.color }}
+                            {% if form.color.errors %}
+                                <div class="text-danger">{{ form.color.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.hourly_rate.id_for_label }}" class="form-label">Hourly Rate (R):</label>
+                            {{ form.hourly_rate }}
+                            {% if form.hourly_rate.errors %}
+                                <div class="text-danger">{{ form.hourly_rate.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.daily_rate.id_for_label }}" class="form-label">Daily Rate (R):</label>
+                            {{ form.daily_rate }}
+                            {% if form.daily_rate.errors %}
+                                <div class="text-danger">{{ form.daily_rate.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.purchase_date.id_for_label }}" class="form-label">Purchase Date:</label>
+                            {{ form.purchase_date }}
+                            {% if form.purchase_date.errors %}
+                                <div class="text-danger">{{ form.purchase_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.purchase_price.id_for_label }}" class="form-label">Purchase Price (R):</label>
+                            {{ form.purchase_price }}
+                            {% if form.purchase_price.errors %}
+                                <div class="text-danger">{{ form.purchase_price.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.last_maintenance.id_for_label }}" class="form-label">Last Maintenance Date:</label>
+                            {{ form.last_maintenance }}
+                            {% if form.last_maintenance.errors %}
+                                <div class="text-danger">{{ form.last_maintenance.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="{{ form.mileage.id_for_label }}" class="form-label">Current Mileage:</label>
+                            {{ form.mileage }}
+                            {% if form.mileage.errors %}
+                                <div class="text-danger">{{ form.mileage.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Notes:</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Bootstrap classes to form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('input, select, textarea');
+        formControls.forEach(function(element) {
+            if (!element.classList.contains('form-control') && !element.classList.contains('form-select')) {
+                if (element.tagName === 'SELECT') {
+                    element.classList.add('form-select');
+                } else if (element.type !== 'checkbox' && element.type !== 'radio') {
+                    element.classList.add('form-control');
+                }
+            }
+        });
+        
+        // Format date inputs
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(function(input) {
+            input.classList.add('form-control');
+        });
+    });
+</script>
+{% endblock %}

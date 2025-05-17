@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="120px" viewBox="0 0 200 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>Scooter Top View</title>
+  <g stroke="black" stroke-width="1" fill="none">
+    <!-- Main body outline -->
+    <path d="M50,60 C50,40 150,40 150,60 C150,80 50,80 50,60 Z" />
+    
+    <!-- Front fairing -->
+    <path d="M150,60 L180,50 L180,70 L150,60 Z" />
+    
+    <!-- Handlebar -->
+    <line x1="120" y1="40" x2="120" y2="30" />
+    <line x1="100" y1="42" x2="100" y2="32" />
+    <line x1="140" y1="42" x2="140" y2="32" />
+    <line x1="100" y1="32" x2="140" y2="32" />
+    
+    <!-- Seat -->
+    <ellipse cx="80" cy="60" rx="20" ry="10" />
+    
+    <!-- Footrests -->
+    <line x1="100" y1="80" x2="100" y2="90" />
+    <line x1="120" y1="80" x2="120" y2="90" />
+    
+    <!-- Wheels (top view) -->
+    <ellipse cx="50" cy="60" rx="10" ry="20" />
+    <ellipse cx="180" cy="60" rx="10" ry="5" />
+    
+    <!-- Center stand -->
+    <line x1="70" y1="60" x2="70" y2="70" />
+    <line x1="90" y1="60" x2="90" y2="70" />
+    <line x1="70" y1="70" x2="90" y2="70" />
+  </g>
+</svg>

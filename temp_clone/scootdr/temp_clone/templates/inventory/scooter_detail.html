@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Scooter Details - {{ scooter.make }} {{ scooter.model }}{% endblock %}
+
+{% block page_title %}Scooter Details{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group" role="group">
+    <a href="{% url 'inventory:scooter_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Scooters
+    </a>
+    <a href="{% url 'inventory:scooter_update' pk=scooter.pk %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edit Scooter
+    </a>
+    <button onclick="window.print();" class="btn btn-info">
+        <i class="fas fa-print"></i> Print Details
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Basic Information</h5>
+                <span class="badge bg-{% if scooter.status == 'available' %}success{% elif scooter.status == 'rented' %}primary{% elif scooter.status == 'maintenance' %}warning{% elif scooter.status == 'damaged' %}danger{% else %}secondary{% endif %}">
+                    {{ scooter.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>VIN/Serial Number:</strong>
+                        <p>{{ scooter.vin }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>License Number:</strong>
+                        <p>{{ scooter.license_number|default:"Not Available" }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <strong>Make:</strong>
+                        <p>{{ scooter.make }}</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Model:</strong>
+                        <p>{{ scooter.model }}</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Year:</strong>
+                        <p>{{ scooter.year }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <strong>Color:</strong>
+                        <p>{{ scooter.color }}</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Current Mileage:</strong>
+                        <p>{{ scooter.mileage }}</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Store Location:</strong>
+                        <p>{{ scooter.store.name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Rental & Financial Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong>Hourly Rate:</strong>
+                        <p>R{{ scooter.hourly_rate }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong>Daily Rate:</strong>
+                        <p>R{{ scooter.daily_rate }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <strong>Purchase Date:</strong>
+                        <p>{{ scooter.purchase_date }}</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Purchase Price:</strong>
+                        <p>R{{ scooter.purchase_price }}</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <strong>Last Maintenance:</strong>
+                        <p>{{ scooter.last_maintenance|default:"Not recorded" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if scooter.notes %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Notes</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ scooter.notes|linebreaks }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Maintenance History</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if maintenance_history %}
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mileage</th>
+                                <th>Cost</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for maintenance in maintenance_history %}
+                            <tr>
+                                <td>{{ maintenance.maintenance_date }}</td>
+                                <td>{{ maintenance.mileage_at_service }}</td>
+                                <td>R{{ maintenance.cost }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="p-3 text-center">
+                    <p class="mb-0">No maintenance history recorded.</p>
+                </div>
+                {% endif %}
+            </div>
+            {% if maintenance_history %}
+            <div class="card-footer">
+                <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#maintenance-details">
+                    Show Details
+                </button>
+            </div>
+            <div class="collapse" id="maintenance-details">
+                <div class="card card-body border-0">
+                    {% for maintenance in maintenance_history %}
+                    <div class="mb-3 pb-3 border-bottom">
+                        <h6>{{ maintenance.maintenance_date }} (R{{ maintenance.cost }})</h6>
+                        <p><strong>Performed by:</strong> {{ maintenance.performed_by }}</p>
+                        <p>{{ maintenance.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any JavaScript functionality for the detail page
+    });
+</script>
+{% endblock %}

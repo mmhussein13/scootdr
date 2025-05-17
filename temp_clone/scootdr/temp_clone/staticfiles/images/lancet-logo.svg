@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150px" height="60px" viewBox="0 0 150 60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>Lancet Labs Logo</title>
+  <g stroke="none" fill="#008B8B">
+    <!-- Logo text -->
+    <text x="10" y="35" font-family="Arial, sans-serif" font-size="22" font-weight="bold">LANCET</text>
+    <text x="90" y="35" font-family="Arial, sans-serif" font-size="16">LABS</text>
+    
+    <!-- Medical cross symbol -->
+    <path d="M130,25 L130,35 M125,30 L135,30" stroke="#008B8B" stroke-width="2" />
+    <circle cx="130" cy="30" r="10" stroke="#008B8B" stroke-width="1" fill="none" />
+  </g>
+</svg>

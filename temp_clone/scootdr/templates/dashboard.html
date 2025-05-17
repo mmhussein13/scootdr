@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Scooter Rental System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Welcome, {{ session['user_name'] }}</h2>
+    <a href="{{ url_for('rentals') }}" class="btn btn-primary">Rent a New Scooter</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Your Rental History</h5>
+    </div>
+    <div class="card-body">
+        {% if rentals %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ref #</th>
+                            <th>Scooter</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rental in rentals %}
+                            <tr>
+                                <td>{{ rental['reference_id'] }}</td>
+                                <td>{{ rental['category_name'] }} ({{ rental['description'] }})</td>
+                                <td>{{ rental['start_date'] }}</td>
+                                <td>{{ rental['end_date'] }}</td>
+                                <td>R{{ rental['total_price'] }}</td>
+                                <td>
+                                    {% if rental['status'] == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif rental['status'] == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                    {% elif rental['status'] == 'completed' %}
+                                        <span class="badge bg-info">Completed</span>
+                                    {% elif rental['status'] == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info mb-0">
+                <p class="mb-0">You haven't rented any scooters yet. <a href="{{ url_for('rentals') }}">Rent a scooter now</a>.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Need Assistance?</h5>
+            </div>
+            <div class="card-body">
+                <p>If you have any questions or need assistance with your rental, please don't hesitate to contact our support team.</p>
+                <p><strong>Phone:</strong> +27 123 456 789</p>
+                <p><strong>Email:</strong> support@scooter-rental.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Tips for Riders</h5>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Always wear a helmet</li>
+                    <li>Check the scooter before riding</li>
+                    <li>Follow traffic rules</li>
+                    <li>Park in designated areas</li>
+                    <li>Return on time to avoid additional charges</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

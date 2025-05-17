@@ -1,0 +1,288 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory Alerts - Scooter Rental Management System{% endblock %}
+
+{% block page_title %}Inventory Alerts {% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bell me-2"></i> Alert Management Dashboard
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Alert Management:</strong> This dashboard helps you monitor and manage inventory-related alerts. 
+                        You can acknowledge alerts that you're working on and resolve alerts that have been addressed.
+                    </div>
+                    
+                    <!-- Status filter tabs -->
+                    <ul class="nav nav-tabs mb-4">
+                        <li class="nav-item">
+                            <a class="nav-link {% if current_status == 'all' %}active{% endif %}" 
+                               href="{% url 'analytics:alerts_dashboard' %}?status=all">
+                                All Alerts
+                                <span class="badge bg-secondary ms-1">{{ status_counts.new|default:0|add:status_counts.acknowledged|default:0|add:status_counts.resolved|default:0|add:status_counts.dismissed|default:0 }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if current_status == 'new' %}active{% endif %}" 
+                               href="{% url 'analytics:alerts_dashboard' %}?status=new">
+                                New
+                                <span class="badge bg-danger ms-1">{{ status_counts.new|default:0 }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if current_status == 'acknowledged' %}active{% endif %}" 
+                               href="{% url 'analytics:alerts_dashboard' %}?status=acknowledged">
+                                Acknowledged
+                                <span class="badge bg-warning ms-1">{{ status_counts.acknowledged|default:0 }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if current_status == 'resolved' %}active{% endif %}" 
+                               href="{% url 'analytics:alerts_dashboard' %}?status=resolved">
+                                Resolved
+                                <span class="badge bg-success ms-1">{{ status_counts.resolved|default:0 }}</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if current_status == 'dismissed' %}active{% endif %}" 
+                               href="{% url 'analytics:alerts_dashboard' %}?status=dismissed">
+                                Dismissed
+                                <span class="badge bg-secondary ms-1">{{ status_counts.dismissed|default:0 }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Alert stats summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title">Low Stock</h5>
+                                        <h3 class="mb-0">{{ alert_type_counts.low_stock|default:0 }}</h3>
+                                    </div>
+                                    <i class="fas fa-box-open fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-dark">
+                                <div class="card-body d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title">Maintenance</h5>
+                                        <h3 class="mb-0">{{ alert_type_counts.maintenance_due|default:0 }}</h3>
+                                    </div>
+                                    <i class="fas fa-tools fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title">Overdue Rentals</h5>
+                                        <h3 class="mb-0">{{ alert_type_counts.overdue_rental|default:0 }}</h3>
+                                    </div>
+                                    <i class="fas fa-calendar-times fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="card-title">Other Alerts</h5>
+                                        <h3 class="mb-0">{{ alert_type_counts.expiring_item|default:0|add:alert_type_counts.price_change|default:0 }}</h3>
+                                    </div>
+                                    <i class="fas fa-exclamation-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts Table -->
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">Alert</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Severity</th>
+                                    <th scope="col">Item</th>
+                                    <th scope="col">Store</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if alerts %}
+                                    {% for alert in alerts %}
+                                        <tr>
+                                            <td class="fw-bold">{{ alert.title }}</td>
+                                            <td>
+                                                <span class="badge rounded-pill bg-primary">{{ alert.get_alert_type_display }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="badge rounded-pill bg-{% if alert.severity == 'critical' %}danger{% elif alert.severity == 'high' %}warning text-dark{% elif alert.severity == 'medium' %}info{% else %}secondary{% endif %}">
+                                                    {{ alert.get_severity_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if alert.part %}
+                                                    <a href="{% url 'inventory:parts_update' pk=alert.part.pk %}">
+                                                        {{ alert.part.name }}
+                                                    </a>
+                                                {% elif alert.scooter %}
+                                                    <a href="#">
+                                                        {{ alert.scooter.make }} {{ alert.scooter.model }}
+                                                    </a>
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ alert.store.name|default:"N/A" }}</td>
+                                            <td>{{ alert.date_created|date:"M d, Y H:i" }}</td>
+                                            <td>
+                                                <span class="badge {% if alert.status == 'new' %}bg-danger{% elif alert.status == 'acknowledged' %}bg-warning text-dark{% elif alert.status == 'resolved' %}bg-success{% else %}bg-secondary{% endif %}">
+                                                    {{ alert.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                {% if alert.status == 'new' %}
+                                                    <form method="post" action="{% url 'analytics:acknowledge_alert' alert_id=alert.id %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-warning">
+                                                            <i class="fas fa-eye me-1"></i> Acknowledge
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                
+                                                {% if alert.status != 'resolved' and alert.status != 'dismissed' %}
+                                                    <form method="post" action="{% url 'analytics:resolve_alert' alert_id=alert.id %}" class="d-inline">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="fas fa-check me-1"></i> Resolve
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                                
+                                                <button type="button" class="btn btn-sm btn-info details-button" data-bs-toggle="collapse" data-bs-target="#details-{{ alert.id }}">
+                                                    <i class="fas fa-info-circle me-1"></i> Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr class="collapse" id="details-{{ alert.id }}">
+                                            <td colspan="8" class="bg-light">
+                                                <div class="p-3">
+                                                    <h6>Alert Description:</h6>
+                                                    <p>{{ alert.description }}</p>
+                                                    
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h6>Alert Details:</h6>
+                                                            <ul class="list-unstyled">
+                                                                <li><strong>Created on:</strong> {{ alert.date_created }}</li>
+                                                                {% if alert.acknowledged_by %}
+                                                                    <li><strong>Acknowledged by:</strong> {{ alert.acknowledged_by }} ({{ alert.date_acknowledged }})</li>
+                                                                {% endif %}
+                                                                {% if alert.resolved_by %}
+                                                                    <li><strong>Resolved by:</strong> {{ alert.resolved_by }} ({{ alert.date_resolved }})</li>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            {% if alert.alert_type == 'low_stock' and alert.part %}
+                                                                <h6>Inventory Details:</h6>
+                                                                <ul class="list-unstyled">
+                                                                    <li><strong>Current Stock:</strong> {{ alert.current_value }}</li>
+                                                                    <li><strong>Reorder Level:</strong> {{ alert.threshold_value }}</li>
+                                                                    <li><strong>Part Number:</strong> {{ alert.part.part_number }}</li>
+                                                                    <li><strong>Store:</strong> {{ alert.store.name }}</li>
+                                                                </ul>
+                                                            {% endif %}
+                                                            
+                                                            {% if alert.alert_type == 'maintenance_due' and alert.scooter %}
+                                                                <h6>Scooter Details:</h6>
+                                                                <ul class="list-unstyled">
+                                                                    <li><strong>VIN:</strong> {{ alert.scooter.vin }}</li>
+                                                                    <li><strong>Make/Model:</strong> {{ alert.scooter.make }} {{ alert.scooter.model }}</li>
+                                                                    <li><strong>Status:</strong> {{ alert.scooter.get_status_display }}</li>
+                                                                    <li><strong>Mileage:</strong> {{ alert.scooter.mileage }}</li>
+                                                                </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <div class="alert alert-success my-3">
+                                                <i class="fas fa-check-circle me-2"></i> No alerts found for the selected filter. Everything looks good!
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap collapsible elements
+        const detailsButtons = document.querySelectorAll('.details-button');
+        
+        detailsButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const target = this.getAttribute('data-bs-target');
+                const detailsRow = document.querySelector(target);
+                
+                // Toggle the collapse class
+                if (detailsRow.classList.contains('show')) {
+                    detailsRow.classList.remove('show');
+                } else {
+                    // Close any open rows first
+                    document.querySelectorAll('.collapse.show').forEach(row => {
+                        if (row.id !== detailsRow.id.substring(1)) {
+                            row.classList.remove('show');
+                        }
+                    });
+                    detailsRow.classList.add('show');
+                }
+            });
+        });
+    });
+
+    // Refresh alert count every 5 minutes
+    setInterval(function() {
+        fetch('{% url "analytics:alert_count_api" %}')
+            .then(response => response.json())
+            .then(data => {
+                // Update count in the page title
+                if (data.count > 0) {
+                    document.title = `(${data.count}) Inventory Alerts - Scooter Rental System`;
+                } else {
+                    document.title = 'Inventory Alerts - Scooter Rental System';
+                }
+            });
+    }, 300000); // 5 minutes
+</script>
+{% endblock %}

@@ -1,0 +1,476 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Service Management{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'service:job_card_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Job Cards
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.job_card_number.id_for_label }}" class="form-label">Job Card Number:</label>
+                            {{ form.job_card_number }}
+                            {% if form.job_card_number.errors %}
+                                <div class="text-danger">{{ form.job_card_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.scooter.id_for_label }}" class="form-label">Scooter:</label>
+                            {{ form.scooter }}
+                            {% if form.scooter.errors %}
+                                <div class="text-danger">{{ form.scooter.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.mileage.id_for_label }}" class="form-label">Current Mileage:</label>
+                            {{ form.mileage }}
+                            {% if form.mileage.errors %}
+                                <div class="text-danger">{{ form.mileage.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">Priority:</label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                                <div class="text-danger">{{ form.priority.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.technician.id_for_label }}" class="form-label">Technician:</label>
+                            {{ form.technician }}
+                            {% if form.technician.errors %}
+                                <div class="text-danger">{{ form.technician.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.estimated_completion.id_for_label }}" class="form-label">Estimated Completion:</label>
+                            {{ form.estimated_completion }}
+                            {% if form.estimated_completion.errors %}
+                                <div class="text-danger">{{ form.estimated_completion.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.actual_completion.id_for_label }}" class="form-label">Actual Completion:</label>
+                            {{ form.actual_completion }}
+                            {% if form.actual_completion.errors %}
+                                <div class="text-danger">{{ form.actual_completion.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.labor_hours.id_for_label }}" class="form-label">Labor Hours:</label>
+                            {{ form.labor_hours }}
+                            {% if form.labor_hours.errors %}
+                                <div class="text-danger">{{ form.labor_hours.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.labor_rate.id_for_label }}" class="form-label">Labor Rate (R):</label>
+                            {{ form.labor_rate }}
+                            {% if form.labor_rate.errors %}
+                                <div class="text-danger">{{ form.labor_rate.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.total_cost.id_for_label }}" class="form-label">Total Cost (R):</label>
+                            {{ form.total_cost }}
+                            {% if form.total_cost.errors %}
+                                <div class="text-danger">{{ form.total_cost.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">This will be calculated automatically</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description:</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes:</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Parts Used</h5>
+                        <button type="button" class="btn btn-sm btn-success" id="add-part-row">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    {{ formset.management_form }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="parts-table">
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price (R)</th>
+                                    <th>Total Price (R)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parts-tbody">
+                                {% for form in formset %}
+                                    <tr class="part-form">
+                                        <td>
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
+                                            {% endfor %}
+                                            {{ form.part }}
+                                            {% if form.part.errors %}
+                                                <div class="text-danger">{{ form.part.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.quantity }}
+                                            {% if form.quantity.errors %}
+                                                <div class="text-danger">{{ form.quantity.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.unit_price }}
+                                            {% if form.unit_price.errors %}
+                                                <div class="text-danger">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.total_price }}
+                                            {% if form.total_price.errors %}
+                                                <div class="text-danger">{{ form.total_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if form.instance.pk %}
+                                                    {{ form.DELETE }}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removePartRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removePartRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-success" onclick="addNewPartRow(this)">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Job Card
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function removePartRow(button) {
+    // Find the current row
+    const row = button.closest('tr');
+    
+    // Check if there's a DELETE checkbox (for existing rows)
+    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+    
+    if (deleteCheckbox) {
+        // Mark for deletion and hide the row
+        deleteCheckbox.checked = true;
+        row.style.display = 'none';
+    } else {
+        // If no DELETE checkbox (new form), just remove the row
+        row.remove();
+    }
+    
+    return false; // Prevent default
+}
+
+function addNewPartRow(button) {
+    // Get the current row that contains the button
+    const currentRow = button.closest('tr');
+    
+    // Clone the row
+    const newRow = currentRow.cloneNode(true);
+    
+    // Get the form count to generate new IDs
+    const formCount = document.querySelector('[name="partsused_set-TOTAL_FORMS"]');
+    const newIndex = parseInt(formCount.value);
+    
+    // Update form count
+    formCount.value = newIndex + 1;
+    
+    // Clear input values in the new row
+    newRow.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+            input.value = '';
+        }
+    });
+    
+    // Reset any select fields
+    newRow.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    // Update IDs and names to use the new index
+    newRow.querySelectorAll('[name^="partsused_set-"]').forEach(field => {
+        const name = field.getAttribute('name');
+        const id = field.getAttribute('id');
+        
+        if (name) {
+            const newName = name.replace(/partsused_set-\d+/, `partsused_set-${newIndex}`);
+            field.setAttribute('name', newName);
+        }
+        
+        if (id) {
+            const newId = id.replace(/id_partsused_set-\d+/, `id_partsused_set-${newIndex}`);
+            field.setAttribute('id', newId);
+        }
+    });
+    
+    // Add the new row after the current one
+    currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+    
+    // Prevent default button behavior
+    return false;
+}
+    // Add Bootstrap classes to form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const formControls = document.querySelectorAll('input, select, textarea');
+        formControls.forEach(function(element) {
+            if (!element.classList.contains('form-control') && !element.classList.contains('form-select') && !element.classList.contains('form-check-input')) {
+                if (element.tagName === 'SELECT') {
+                    element.classList.add('form-select');
+                } else if (element.type === 'checkbox') {
+                    element.classList.add('form-check-input');
+                } else if (element.type !== 'hidden') {
+                    element.classList.add('form-control');
+                }
+            }
+        });
+        
+        // Format date inputs
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(function(input) {
+            input.classList.add('form-control');
+        });
+        
+        // Function to set up event listeners for part row
+        function setupPartFormListeners(form) {
+            const quantityInput = form.querySelector('input[name$="-quantity"]');
+            const unitPriceInput = form.querySelector('input[name$="-unit_price"]');
+            const totalPriceInput = form.querySelector('input[name$="-total_price"]');
+            
+            if (quantityInput && unitPriceInput && totalPriceInput) {
+                const calculateTotal = function() {
+                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const unitPrice = parseFloat(unitPriceInput.value) || 0;
+                    totalPriceInput.value = (quantity * unitPrice).toFixed(2);
+                };
+                
+                quantityInput.addEventListener('input', calculateTotal);
+                unitPriceInput.addEventListener('input', calculateTotal);
+                
+                // Auto-populate unit price when part is selected
+                const partSelect = form.querySelector('select[name$="-part"]');
+                if (partSelect) {
+                    partSelect.addEventListener('change', function() {
+                        const partId = this.value;
+                        if (partId) {
+                            // Fetch part price from the server
+                            fetch(`/service/get-part-price/${partId}/`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        unitPriceInput.value = data.price.toFixed(2);
+                                        calculateTotal();
+                                    } else {
+                                        console.error('Error fetching price:', data.error);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching price:', error);
+                                });
+                        } else {
+                            unitPriceInput.value = '';
+                            totalPriceInput.value = '';
+                        }
+                    });
+                }
+            }
+            
+            // Handle remove part button
+            const removeButton = form.querySelector('.remove-part');
+            if (removeButton) {
+                removeButton.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    row.style.display = 'none';
+                    
+                    // Find the DELETE checkbox if it exists and check it
+                    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+                    if (deleteCheckbox) {
+                        deleteCheckbox.checked = true;
+                    } else {
+                        // If no DELETE checkbox (new form), just hide the row
+                        row.remove();
+                    }
+                });
+            }
+            
+            // Handle add part inline button
+            const addInlineButton = form.querySelector('.add-part-inline');
+            if (addInlineButton) {
+                addInlineButton.addEventListener('click', function() {
+                    // Get the current form count
+                    const formCountInput = document.querySelector('[name="jobcarditem_set-TOTAL_FORMS"]');
+                    if (!formCountInput) return;
+                    
+                    const formCount = parseInt(formCountInput.value);
+                    
+                    // Clone the current row
+                    const currentRow = this.closest('tr');
+                    const newRow = currentRow.cloneNode(true);
+                    
+                    // Update the IDs and names of all form elements
+                    newRow.querySelectorAll('input, select, textarea').forEach(function(element) {
+                        const name = element.getAttribute('name');
+                        const id = element.getAttribute('id');
+                        
+                        if (name) {
+                            const newName = name.replace(/jobcarditem_set-\d+/, `jobcarditem_set-${formCount}`);
+                            element.setAttribute('name', newName);
+                        }
+                        
+                        if (id) {
+                            const newId = id.replace(/id_jobcarditem_set-\d+/, `id_jobcarditem_set-${formCount}`);
+                            element.setAttribute('id', newId);
+                        }
+                        
+                        // Clear values for new row
+                        if (element.tagName === 'SELECT') {
+                            element.selectedIndex = 0;
+                        } else if (element.type !== 'hidden' && !element.classList.contains('delete-checkbox')) {
+                            element.value = '';
+                        }
+                    });
+                    
+                    // Add new row after current one
+                    if (currentRow.nextSibling) {
+                        currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+                    } else {
+                        currentRow.parentNode.appendChild(newRow);
+                    }
+                    
+                    // Set up the event listeners for the new row
+                    setupPartFormListeners(newRow);
+                    
+                    // Update the form count
+                    formCountInput.value = formCount + 1;
+                });
+            }
+        }
+        
+        // Set up existing part forms and attach listeners
+        const partForms = document.querySelectorAll('.part-form');
+        partForms.forEach(setupPartFormListeners);
+        
+        // Make sure all add buttons are initialized
+        partForms.forEach(row => {
+            const addButton = row.querySelector('.add-part-inline');
+            if (addButton) {
+                console.log('Initializing add button in row');
+            }
+        });
+        
+        // Handle the "Add Item" button click
+        const addPartButton = document.getElementById('add-part-row');
+        if (addPartButton) {
+            addPartButton.addEventListener('click', function() {
+                // Get the total number of forms
+                const formCountInput = document.querySelector('[name="jobcarditem_set-TOTAL_FORMS"]');
+                if (!formCountInput) return;
+                
+                const formCount = parseInt(formCountInput.value);
+                
+                // Clone the first form or create a new row
+                const tbody = document.getElementById('parts-tbody');
+                const firstForm = tbody.querySelector('.part-form');
+                if (!firstForm) return;
+                
+                const newRow = firstForm.cloneNode(true);
+                
+                // Update the IDs and names of all inputs in the new row
+                const inputs = newRow.querySelectorAll('input, select');
+                inputs.forEach(function(input) {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        const newName = name.replace(/\d+/, formCount);
+                        input.setAttribute('name', newName);
+                        input.setAttribute('id', `id_${newName}`);
+                        
+                        // Clear values
+                        if (input.tagName === 'SELECT') {
+                            input.selectedIndex = 0;
+                        } else if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+                            input.value = '';
+                        }
+                    }
+                });
+                
+                // Add the new row to the table
+                tbody.appendChild(newRow);
+                
+                // Setup the listeners for the new row
+                setupPartFormListeners(newRow);
+                
+                // Update the form count
+                formCountInput.value = formCount + 1;
+            });
+        }
+    });
+</script>
+{% endblock %}

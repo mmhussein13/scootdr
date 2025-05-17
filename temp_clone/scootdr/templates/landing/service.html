@@ -1,0 +1,302 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}Scooter Service & Maintenance - ScootDr{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="mb-5">Scooter Service & Maintenance</h1>
+        
+        <!-- Intro Section -->
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <h2>Expert Scooter Servicing</h2>
+                <p class="lead">Professional maintenance and repair services for all scooter makes and models</p>
+                <p>At ScootDr, our certified technicians bring years of specialized experience to every service job. We use state-of-the-art diagnostic equipment and genuine parts to ensure your scooter receives the highest quality care.</p>
+                <p>Whether you need routine maintenance, major repairs, or performance upgrades, our team is equipped to handle all your scooter service needs.</p>
+                <a href="#booking-form" class="btn btn-primary btn-lg">Book a Service</a>
+            </div>
+            <div class="col-md-6">
+                <img src="/static/images/service-hero.jpg" alt="Scooter Service" class="img-fluid rounded shadow">
+            </div>
+        </div>
+        
+        <!-- Service Packages -->
+        <h2 class="mb-4">Service Packages</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Basic Service</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <span class="display-6">R450</span>
+                        </div>
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Oil and filter change</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Air filter inspection/cleaning</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Tire pressure check and adjustment</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Brake inspection</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Basic safety inspection</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Lubrication of cables and pivots</li>
+                        </ul>
+                        <div class="text-center">
+                            <a href="#booking-form" class="btn btn-primary">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Intermediate Service</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <span class="display-6">R850</span>
+                        </div>
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Everything in Basic Service</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Spark plug replacement</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Carburetor adjustment</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Drive belt inspection</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Comprehensive electrical check</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Battery inspection and service</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Valve clearance check and adjustment</li>
+                        </ul>
+                        <div class="text-center">
+                            <a href="#booking-form" class="btn btn-primary">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4 class="mb-0">Full Service</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <span class="display-6">R1250</span>
+                        </div>
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Everything in Intermediate Service</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Fuel filter replacement</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Transmission oil change</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Drive belt replacement (if needed)</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Brake pad inspection/replacement</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Brake fluid flush</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Cooling system inspection</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Detailed diagnostic check</li>
+                            <li class="list-group-item"><i class="fas fa-check text-success me-2"></i> Software updates (if applicable)</li>
+                        </ul>
+                        <div class="text-center">
+                            <a href="#booking-form" class="btn btn-primary">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Services -->
+        <h2 class="mb-4 mt-5">Additional Services</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <h4 class="card-title">Repairs & Diagnostics</h4>
+                        <p class="card-text">Comprehensive repair services for all types of scooter issues:</p>
+                        <ul>
+                            <li>Engine rebuilds</li>
+                            <li>Electrical system diagnostics and repair</li>
+                            <li>Carburetor rebuilding and tuning</li>
+                            <li>Fuel injection system servicing</li>
+                            <li>CVT transmission repair</li>
+                            <li>Computer diagnostic services</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h4 class="card-title">Performance Upgrades</h4>
+                        <p class="card-text">Take your scooter to the next level with our performance enhancement services:</p>
+                        <ul>
+                            <li>Performance exhaust systems</li>
+                            <li>Engine tuning and modifications</li>
+                            <li>Carburetor jetting and upgrades</li>
+                            <li>CDI and ECU modifications</li>
+                            <li>Transmission upgrades</li>
+                            <li>Suspension improvements</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <h4 class="card-title">Specialized Services</h4>
+                        <p class="card-text">Additional services to keep your scooter in peak condition:</p>
+                        <ul>
+                            <li>Wheel alignment and balancing</li>
+                            <li>Pre-purchase inspections</li>
+                            <li>Roadworthy certificates</li>
+                            <li>Winter storage preparation</li>
+                            <li>Custom accessory installation</li>
+                            <li>Insurance assessment and repair</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Why Choose Us -->
+        <div class="card mt-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Why Choose ScootDr for Your Service Needs?</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4><i class="fas fa-certificate text-primary me-2"></i> Certified Technicians</h4>
+                        <p>Our technicians are factory-trained and certified with years of specialized experience in scooter repair and maintenance.</p>
+                        
+                        <h4><i class="fas fa-tools text-primary me-2"></i> Advanced Equipment</h4>
+                        <p>We use the latest diagnostic equipment and specialized tools to accurately identify and fix issues with your scooter.</p>
+                        
+                        <h4><i class="fas fa-star text-primary me-2"></i> Quality Parts</h4>
+                        <p>We only use genuine or high-quality aftermarket parts to ensure reliability and performance.</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h4><i class="fas fa-shield-alt text-primary me-2"></i> Service Warranty</h4>
+                        <p>All our repair work comes with a warranty for your peace of mind. We stand behind our quality of service.</p>
+                        
+                        <h4><i class="fas fa-clock text-primary me-2"></i> Efficient Service</h4>
+                        <p>We respect your time and strive to complete services efficiently without compromising on quality.</p>
+                        
+                        <h4><i class="fas fa-hand-holding-usd text-primary me-2"></i> Transparent Pricing</h4>
+                        <p>No hidden costs or surprises. We provide clear estimates before beginning any work on your scooter.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Booking Form -->
+        <div class="card mt-5" id="booking-form">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Book a Service Appointment</h3>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="customerName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="customerName" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="customerEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="customerEmail" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="customerPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="customerPhone" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="scooterModel" class="form-label">Scooter Make and Model</label>
+                            <input type="text" class="form-control" id="scooterModel" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="scooterYear" class="form-label">Year</label>
+                            <input type="number" class="form-control" id="scooterYear" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="mileage" class="form-label">Current Mileage (km)</label>
+                            <input type="number" class="form-control" id="mileage" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="serviceType" class="form-label">Service Type</label>
+                            <select class="form-select" id="serviceType" required>
+                                <option value="">Select a service</option>
+                                <option value="basic">Basic Service</option>
+                                <option value="intermediate">Intermediate Service</option>
+                                <option value="full">Full Service</option>
+                                <option value="repair">Specific Repair</option>
+                                <option value="diagnosis">Diagnosis Only</option>
+                                <option value="performance">Performance Upgrade</option>
+                                <option value="other">Other Service</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="preferredDate" class="form-label">Preferred Service Date</label>
+                            <input type="date" class="form-control" id="preferredDate" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="serviceDetails" class="form-label">Service Details or Issues</label>
+                        <textarea class="form-control" id="serviceDetails" rows="3" placeholder="Please describe any specific issues or services needed"></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="pickupService">
+                        <label class="form-check-label" for="pickupService">I would like to use the pickup and delivery service (additional fee applies)</label>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">Book Service Appointment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Maintenance Tips -->
+        <div class="card mt-5">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">Scooter Maintenance Tips</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <h5><i class="fas fa-oil-can text-primary me-2"></i> Regular Oil Changes</h5>
+                        <p>Change your engine oil every 1000-2000km or as recommended by the manufacturer. Fresh oil ensures proper lubrication and extends engine life.</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5><i class="fas fa-tachometer-alt text-primary me-2"></i> Tire Pressure</h5>
+                        <p>Check tire pressure weekly. Proper inflation improves handling, fuel efficiency, and tire longevity. The recommended pressure is usually listed on the tire wall.</p>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <h5><i class="fas fa-battery-full text-primary me-2"></i> Battery Care</h5>
+                        <p>Keep battery terminals clean and check voltage regularly. Consider a trickle charger for long storage periods to maintain battery health.</p>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{% url 'landing:maintenance_tips' %}" class="btn btn-outline-primary">View All Maintenance Tips</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="call-to-action">
+    <div class="container text-center">
+        <h2 class="mb-3">Keep Your Scooter Running at Its Best</h2>
+        <p class="lead mb-4">Schedule a service appointment today and enjoy a smoother, safer ride</p>
+        <a href="#booking-form" class="btn btn-primary btn-lg">Book Now</a>
+    </div>
+</section>
+{% endblock %}

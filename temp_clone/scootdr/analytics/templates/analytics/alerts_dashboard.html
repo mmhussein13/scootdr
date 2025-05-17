@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory Alerts - Scooter Rental Management System{% endblock %}
+
+{% block page_title %}Inventory Alerts Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar: Alert filters and summary -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Alert Filters</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'analytics:alerts_dashboard' %}?status=all" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                                  {% if current_status == 'all' %}active{% endif %}">
+                            <div>
+                                <i class="fas fa-list me-2"></i> All Alerts
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">
+                                {{ status_counts.new|default:"0"|add:status_counts.acknowledged|default:"0"|add:status_counts.resolved|default:"0"|add:status_counts.dismissed|default:"0" }}
+                            </span>
+                        </a>
+                        <a href="{% url 'analytics:alerts_dashboard' %}?status=new" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                                  {% if current_status == 'new' %}active{% endif %}">
+                            <div>
+                                <i class="fas fa-bell me-2"></i> New Alerts
+                            </div>
+                            <span class="badge bg-danger rounded-pill">{{ status_counts.new|default:"0" }}</span>
+                        </a>
+                        <a href="{% url 'analytics:alerts_dashboard' %}?status=acknowledged" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                                  {% if current_status == 'acknowledged' %}active{% endif %}">
+                            <div>
+                                <i class="fas fa-eye me-2"></i> Acknowledged
+                            </div>
+                            <span class="badge bg-warning rounded-pill">{{ status_counts.acknowledged|default:"0" }}</span>
+                        </a>
+                        <a href="{% url 'analytics:alerts_dashboard' %}?status=resolved" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                                  {% if current_status == 'resolved' %}active{% endif %}">
+                            <div>
+                                <i class="fas fa-check-circle me-2"></i> Resolved
+                            </div>
+                            <span class="badge bg-success rounded-pill">{{ status_counts.resolved|default:"0" }}</span>
+                        </a>
+                        <a href="{% url 'analytics:alerts_dashboard' %}?status=dismissed" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                                  {% if current_status == 'dismissed' %}active{% endif %}">
+                            <div>
+                                <i class="fas fa-times-circle me-2"></i> Dismissed
+                            </div>
+                            <span class="badge bg-secondary rounded-pill">{{ status_counts.dismissed|default:"0" }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Alert Types</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="alertTypesChart" width="100%" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action" id="runAlertsGeneratorBtn">
+                            <i class="fas fa-sync me-2"></i> Run Alerts Generator
+                        </a>
+                        <a href="{% url 'analytics:analytics_dashboard' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-line me-2"></i> Analytics Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content: Alerts list -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        {% if current_status == 'new' %}
+                            <i class="fas fa-bell text-danger me-2"></i>New Alerts
+                        {% elif current_status == 'acknowledged' %}
+                            <i class="fas fa-eye text-warning me-2"></i>Acknowledged Alerts
+                        {% elif current_status == 'resolved' %}
+                            <i class="fas fa-check-circle text-success me-2"></i>Resolved Alerts 
+                        {% elif current_status == 'dismissed' %}
+                            <i class="fas fa-times-circle text-secondary me-2"></i>Dismissed Alerts
+                        {% else %}
+                            <i class="fas fa-list me-2"></i>All Alerts
+                        {% endif %}
+                    </h5>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#alertFilterModal">
+                            <i class="fas fa-filter me-1"></i> Advanced Filter
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if alerts %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Priority</th>
+                                        <th>Type</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for alert in alerts %}
+                                        <tr>
+                                            <td>
+                                                {% if alert.severity == 'critical' %}
+                                                    <span class="badge bg-danger">Critical</span>
+                                                {% elif alert.severity == 'high' %}
+                                                    <span class="badge bg-warning">High</span>
+                                                {% elif alert.severity == 'medium' %}
+                                                    <span class="badge bg-info">Medium</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Low</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if alert.alert_type == 'low_stock' %}
+                                                    <span class="badge bg-dark">Low Stock</span>
+                                                {% elif alert.alert_type == 'overdue_rental' %}
+                                                    <span class="badge bg-danger">Overdue Rental</span>
+                                                {% elif alert.alert_type == 'maintenance_due' %}
+                                                    <span class="badge bg-warning">Maintenance Due</span>
+                                                {% elif alert.alert_type == 'expiring_item' %}
+                                                    <span class="badge bg-info">Expiring Item</span>
+                                                {% elif alert.alert_type == 'price_change' %}
+                                                    <span class="badge bg-success">Price Change</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="#" class="alert-details-link" data-alert-id="{{ alert.id }}">
+                                                    {{ alert.title }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {% if alert.status == 'new' %}
+                                                    <span class="badge bg-danger">New</span>
+                                                {% elif alert.status == 'acknowledged' %}
+                                                    <span class="badge bg-warning">Acknowledged</span>
+                                                {% elif alert.status == 'resolved' %}
+                                                    <span class="badge bg-success">Resolved</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Dismissed</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ alert.date_created|date:"M d, Y H:i" }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Actions
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a href="#" class="dropdown-item alert-details-link" data-alert-id="{{ alert.id }}">
+                                                                <i class="fas fa-eye me-1"></i> View Details
+                                                            </a>
+                                                        </li>
+                                                        
+                                                        {% if alert.status == 'new' %}
+                                                            <li>
+                                                                <form method="post" action="{% url 'analytics:acknowledge_alert' alert_id=alert.id %}" class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="fas fa-check me-1"></i> Acknowledge
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        {% if alert.status == 'new' or alert.status == 'acknowledged' %}
+                                                            <li>
+                                                                <form method="post" action="{% url 'analytics:resolve_alert' alert_id=alert.id %}" class="d-inline">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="dropdown-item">
+                                                                        <i class="fas fa-check-circle me-1"></i> Mark Resolved
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        {% if alert.alert_type == 'low_stock' and alert.part %}
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a href="{% url 'inventory:parts_update' pk=alert.part.id %}" class="dropdown-item">
+                                                                    <i class="fas fa-edit me-1"></i> Update Part
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        {% if alert.alert_type == 'overdue_rental' and alert.scooter %}
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a href="#" class="dropdown-item">
+                                                                    <i class="fas fa-phone me-1"></i> Contact Customer
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                        
+                                                        {% if alert.alert_type == 'maintenance_due' and alert.scooter %}
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a href="{% url 'service:job_card_create' %}" class="dropdown-item">
+                                                                    <i class="fas fa-wrench me-1"></i> Create Job Card
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info m-3">
+                            <i class="fas fa-info-circle me-2"></i> No alerts found matching the current filter criteria.
+                        </div>
+                    {% endif %}
+                </div>
+                {% if alerts %}
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">Showing {{ alerts|length }} alert(s)</small>
+                            </div>
+                            <nav aria-label="Alert pagination">
+                                <ul class="pagination pagination-sm mb-0">
+                                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Details Modal -->
+<div class="modal fade" id="alertDetailsModal" tabindex="-1" aria-labelledby="alertDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertDetailsModalLabel">Alert Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="alertDetailsContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading alert details...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div id="alertActionButtons">
+                    <!-- Action buttons will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Filter Modal -->
+<div class="modal fade" id="alertFilterModal" tabindex="-1" aria-labelledby="alertFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="alertFilterModalLabel">Advanced Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="advancedFilterForm" method="get" action="{% url 'analytics:alerts_dashboard' %}">
+                    <div class="mb-3">
+                        <label for="alertType" class="form-label">Alert Type</label>
+                        <select class="form-select" id="alertType" name="alert_type">
+                            <option value="">All Types</option>
+                            <option value="low_stock">Low Stock</option>
+                            <option value="overdue_rental">Overdue Rental</option>
+                            <option value="maintenance_due">Maintenance Due</option>
+                            <option value="expiring_item">Expiring Item</option>
+                            <option value="price_change">Price Change</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="severity" class="form-label">Severity</label>
+                        <select class="form-select" id="severity" name="severity">
+                            <option value="">All Severities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="storeFilter" class="form-label">Store</label>
+                        <select class="form-select" id="storeFilter" name="store">
+                            <option value="">All Stores</option>
+                            <!-- This would be populated from the backend -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dateRange" class="form-label">Date Range</label>
+                        <select class="form-select" id="dateRange" name="date_range">
+                            <option value="">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="this_week">This Week</option>
+                            <option value="last_week">Last Week</option>
+                            <option value="this_month">This Month</option>
+                            <option value="last_month">Last Month</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="applyFilterBtn">Apply Filter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Run Alert Generator Modal -->
+<div class="modal fade" id="runAlertGeneratorModal" tabindex="-1" aria-labelledby="runAlertGeneratorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="runAlertGeneratorModalLabel">Run Alert Generator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Running the alert generator will scan the system for new conditions that should trigger alerts, such as:</p>
+                <ul>
+                    <li>Inventory items that have fallen below reorder levels</li>
+                    <li>Rentals that have become overdue</li>
+                    <li>Scooters that are due for maintenance</li>
+                </ul>
+                <p>This may take a few moments to complete. Do you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmRunGeneratorBtn">
+                    <i class="fas fa-sync me-1"></i> Run Generator
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Setup alert types chart
+        const alertTypesData = {
+            labels: [
+                {% for alert_type in alert_types %}
+                    '{{ alert_type.alert_type|title|replace:"_":" " }}',
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for alert_type in alert_types %}
+                        {{ alert_type.count }},
+                    {% endfor %}
+                ],
+                backgroundColor: [
+                    '#212529', // Dark (Low Stock)
+                    '#dc3545', // Danger (Overdue Rental)
+                    '#ffc107', // Warning (Maintenance Due)
+                    '#17a2b8', // Info (Expiring Item)
+                    '#28a745'  // Success (Price Change)
+                ]
+            }]
+        };
+
+        const alertTypesCtx = document.getElementById('alertTypesChart').getContext('2d');
+        const alertTypesChart = new Chart(alertTypesCtx, {
+            type: 'doughnut',
+            data: alertTypesData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12
+                        }
+                    }
+                }
+            }
+        });
+
+        // Alert details modal functionality
+        const alertDetailsLinks = document.querySelectorAll('.alert-details-link');
+        const alertDetailsModal = document.getElementById('alertDetailsModal');
+        const alertDetailsContent = document.getElementById('alertDetailsContent');
+        const alertActionButtons = document.getElementById('alertActionButtons');
+
+        alertDetailsLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const alertId = this.getAttribute('data-alert-id');
+                
+                // In a real implementation, this would fetch the alert details via AJAX
+                // For now, we'll just show a placeholder content
+                alertDetailsContent.innerHTML = `
+                    <div class="alert alert-info">
+                        <p><strong>This is a simulated alert detail view.</strong></p>
+                        <p>In a real implementation, this would show detailed information about alert ID ${alertId}.</p>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">Alert Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-3">Alert ID</dt>
+                                <dd class="col-sm-9">${alertId}</dd>
+                                
+                                <dt class="col-sm-3">Title</dt>
+                                <dd class="col-sm-9">Low Stock: Oil Filter</dd>
+                                
+                                <dt class="col-sm-3">Type</dt>
+                                <dd class="col-sm-9"><span class="badge bg-dark">Low Stock</span></dd>
+                                
+                                <dt class="col-sm-3">Severity</dt>
+                                <dd class="col-sm-9"><span class="badge bg-warning">High</span></dd>
+                                
+                                <dt class="col-sm-3">Status</dt>
+                                <dd class="col-sm-9"><span class="badge bg-danger">New</span></dd>
+                                
+                                <dt class="col-sm-3">Created</dt>
+                                <dd class="col-sm-9">May 8, 2025 10:30 AM</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Description</h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Part #OIL-123 in store Main Workshop is low on stock. Current stock: 2, Reorder level: 5.</p>
+                        </div>
+                    </div>
+                `;
+                
+                // Dynamic buttons based on alert status
+                alertActionButtons.innerHTML = `
+                    <button type="button" class="btn btn-warning">Acknowledge</button>
+                    <button type="button" class="btn btn-success">Resolve</button>
+                `;
+                
+                const modal = new bootstrap.Modal(alertDetailsModal);
+                modal.show();
+            });
+        });
+
+        // Run Alert Generator
+        const runAlertsGeneratorBtn = document.getElementById('runAlertsGeneratorBtn');
+        const confirmRunGeneratorBtn = document.getElementById('confirmRunGeneratorBtn');
+        const runAlertGeneratorModal = document.getElementById('runAlertGeneratorModal');
+        
+        runAlertsGeneratorBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = new bootstrap.Modal(runAlertGeneratorModal);
+            modal.show();
+        });
+        
+        confirmRunGeneratorBtn.addEventListener('click', function() {
+            confirmRunGeneratorBtn.disabled = true;
+            confirmRunGeneratorBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Running...';
+            
+            // Simulate alert generation with a timeout
+            setTimeout(function() {
+                bootstrap.Modal.getInstance(runAlertGeneratorModal).hide();
+                // Reload the page to show new alerts
+                window.location.reload();
+            }, 2000);
+        });
+        
+        // Apply advanced filter
+        const applyFilterBtn = document.getElementById('applyFilterBtn');
+        const advancedFilterForm = document.getElementById('advancedFilterForm');
+        
+        applyFilterBtn.addEventListener('click', function() {
+            advancedFilterForm.submit();
+        });
+    });
+</script>
+{% endblock %}

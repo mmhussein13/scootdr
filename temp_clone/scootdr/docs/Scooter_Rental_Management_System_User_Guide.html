@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Scooter Rental Management System - User Guide</title>
+<style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 2cm;
+                color: #333;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                color: #1a5276;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
+            h1 {
+                text-align: center;
+                font-size: 24pt;
+                border-bottom: 2px solid #1a5276;
+                padding-bottom: 10px;
+            }
+            h2 {
+                font-size: 18pt;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 5px;
+            }
+            h3 {
+                font-size: 14pt;
+            }
+            p, ul, ol {
+                margin-bottom: 10px;
+            }
+            code {
+                background-color: #f5f5f5;
+                padding: 2px 4px;
+                border-radius: 4px;
+                font-family: Consolas, monospace;
+            }
+            pre {
+                background-color: #f5f5f5;
+                padding: 10px;
+                border-radius: 4px;
+                overflow-x: auto;
+                font-family: Consolas, monospace;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 20px 0;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            img {
+                max-width: 100%;
+                height: auto;
+                margin: 10px auto;
+                display: block;
+                border: 1px solid #ddd;
+            }
+            hr {
+                border: none;
+                height: 1px;
+                background-color: #ddd;
+                margin: 20px 0;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            a {
+                color: #3498db;
+                text-decoration: none;
+            }
+            .toc {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 20px;
+            }
+            .toc h2 {
+                margin-top: 0;
+            }
+            .footer {
+                text-align: center;
+                font-size: 9pt;
+                color: #777;
+                margin-top: 30px;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
+            }
+        </style>
+</head>
+<body>
+<h1>Scooter Rental Management System - User Guide</h1>
+<p>This user guide provides step-by-step instructions for using the Scooter Rental Management System.</p>
+<h2>Table of Contents</h2>
+<ol>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#dashboard-overview">Dashboard Overview</a></li>
+<li><a href="#scooter-management">Scooter Management</a></li>
+<li><a href="#parts-inventory">Parts Inventory</a></li>
+<li><a href="#store-management">Store Management</a></li>
+<li><a href="#stock-transfers">Stock Transfers</a></li>
+<li><a href="#supplier-management">Supplier Management</a></li>
+<li><a href="#purchase-management">Purchase Management</a></li>
+<li><a href="#service-and-job-cards">Service and Job Cards</a></li>
+<li><a href="#customer-management">Customer Management</a></li>
+<li><a href="#rental-management">Rental Management</a></li>
+<li><a href="#analytics-and-reporting">Analytics and Reporting</a></li>
+<li><a href="#alert-system">Alert System</a></li>
+</ol>
+<hr/>
+<h2>Getting Started</h2>
+<h3>Logging In</h3>
+<ol>
+<li>Navigate to the login page</li>
+<li>Enter your username and password</li>
+<li>Click "Sign In"</li>
+</ol>
+<p><img alt="Login Page" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/login.png"/></p>
+<hr/>
+<h2>Dashboard Overview</h2>
+<p>The dashboard provides a high-level overview of your business operations, including:</p>
+<ul>
+<li>Total scooters and available scooters</li>
+<li>Recent rentals</li>
+<li>Active job cards</li>
+<li>Low stock items</li>
+<li>Recent stock transfers</li>
+<li>Statistical charts and graphs</li>
+</ul>
+<p><img alt="Dashboard" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/dashboard.png"/></p>
+<hr/>
+<h2>Scooter Management</h2>
+<p>Manage your scooter fleet, including adding new scooters, tracking maintenance, and updating status.</p>
+<h3>Viewing Scooters</h3>
+<p>The scooter list provides an overview of all scooters in your inventory.</p>
+<p><img alt="Scooter List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/scooter_list.png"/></p>
+<h3>Adding a New Scooter</h3>
+<ol>
+<li>Click "Add New Scooter" from the scooter list page</li>
+<li>Fill in all required details</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Add Scooter Form" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/add_scooter.png"/></p>
+<h3>Scooter Details</h3>
+<p>View comprehensive details about a scooter, including:
+- Specifications
+- Maintenance history
+- Rental history
+- Current status</p>
+<p><img alt="Scooter Details" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/scooter_details.png"/></p>
+<hr/>
+<h2>Parts Inventory</h2>
+<p>Track and manage scooter parts and consumables across your stores.</p>
+<h3>Viewing Parts</h3>
+<p>The parts inventory list shows all parts with their respective stocks.</p>
+<p><img alt="Parts List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/parts_list.png"/></p>
+<h3>Adding New Parts</h3>
+<ol>
+<li>Click "Add New Part" from the parts list page</li>
+<li>Fill in all required details</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Add Part Form" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/add_part.png"/></p>
+<hr/>
+<h2>Store Management</h2>
+<p>Manage your physical store locations that hold inventory.</p>
+<h3>Viewing Stores</h3>
+<p>The store list shows all your locations.</p>
+<p><img alt="Store List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/store_list.png"/></p>
+<h3>Adding a New Store</h3>
+<ol>
+<li>Click "Add New Store" from the store list page</li>
+<li>Fill in store details</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Add Store Form" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/add_store.png"/></p>
+<hr/>
+<h2>Stock Transfers</h2>
+<p>Move parts inventory between different store locations.</p>
+<h3>Viewing Stock Transfers</h3>
+<p>The stock transfer list shows all transfers and their statuses.</p>
+<p><img alt="Stock Transfer List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/stock_transfer_list.png"/></p>
+<h3>Creating a New Stock Transfer</h3>
+<ol>
+<li>Click "New Stock Transfer" from the stock transfer list page</li>
+<li>Select source and destination stores</li>
+<li>Select the part to transfer and quantity</li>
+<li>Click "Save"</li>
+</ol>
+<p>Note: Transfer numbers are automatically generated with the format TRF-YYYYMMDD-XXXX.</p>
+<p><img alt="Create Stock Transfer" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/create_stock_transfer.png"/></p>
+<hr/>
+<h2>Supplier Management</h2>
+<p>Manage your suppliers for parts and scooters.</p>
+<h3>Viewing Suppliers</h3>
+<p>The supplier list shows all your suppliers.</p>
+<p><img alt="Supplier List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/supplier_list.png"/></p>
+<h3>Adding a New Supplier</h3>
+<ol>
+<li>Click "Add New Supplier" from the supplier list page</li>
+<li>Fill in supplier details</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Add Supplier Form" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/add_supplier.png"/></p>
+<hr/>
+<h2>Purchase Management</h2>
+<p>Track and manage purchases from suppliers.</p>
+<h3>Viewing Purchases</h3>
+<p>The purchase list shows all purchase invoices.</p>
+<p><img alt="Purchase List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/purchase_list.png"/></p>
+<h3>Creating a New Purchase</h3>
+<ol>
+<li>Click "Create New Purchase" from the purchase list page</li>
+<li>Select the supplier and fill in invoice details</li>
+<li>Add purchase items</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Create Purchase" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/create_purchase.png"/></p>
+<hr/>
+<h2>Service and Job Cards</h2>
+<p>Manage scooter maintenance and repairs.</p>
+<h3>Viewing Job Cards</h3>
+<p>The job card list shows all maintenance records.</p>
+<p><img alt="Job Card List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/job_card_list.png"/></p>
+<h3>Creating a New Job Card</h3>
+<ol>
+<li>Click "Create New Job Card" from the job card list page</li>
+<li>Select the scooter and technician</li>
+<li>Add service items and parts used</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Create Job Card" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/create_job_card.png"/></p>
+<hr/>
+<h2>Customer Management</h2>
+<p>Manage customer profiles and information.</p>
+<h3>Viewing Customers</h3>
+<p>The customer list shows all registered customers.</p>
+<p><img alt="Customer List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/customer_list.png"/></p>
+<h3>Adding a New Customer</h3>
+<ol>
+<li>Click "Add New Customer" from the customer list page</li>
+<li>Fill in customer details</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Add Customer Form" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/add_customer.png"/></p>
+<hr/>
+<h2>Rental Management</h2>
+<p>Track and manage scooter rentals.</p>
+<h3>Viewing Rentals</h3>
+<p>The rental list shows all rental records.</p>
+<p><img alt="Rental List" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/rental_list.png"/></p>
+<h3>Creating a New Rental</h3>
+<ol>
+<li>Click "Create New Rental" from the rental list page</li>
+<li>Select customer and scooter</li>
+<li>Set rental period and rate</li>
+<li>Add deposit information</li>
+<li>Click "Save"</li>
+</ol>
+<p><img alt="Create Rental" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/create_rental.png"/></p>
+<hr/>
+<h2>Analytics and Reporting</h2>
+<p>Access data insights and business metrics.</p>
+<h3>Analytics Dashboard</h3>
+<p>The analytics dashboard provides visualizations of key performance indicators.</p>
+<p><img alt="Analytics Dashboard" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/analytics_dashboard.png"/></p>
+<h3>Generating Reports</h3>
+<ol>
+<li>Navigate to the appropriate report from the analytics menu</li>
+<li>Set filtering criteria if needed</li>
+<li>Click "Generate Report"</li>
+<li>Export to Excel if required</li>
+</ol>
+<p><img alt="Report Generation" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/generate_report.png"/></p>
+<hr/>
+<h2>Alert System</h2>
+<p>Stay informed about inventory levels, maintenance needs, and rental status.</p>
+<h3>Viewing Alerts</h3>
+<p>The alerts dashboard shows all active alerts.</p>
+<p><img alt="Alerts Dashboard" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/alerts_dashboard.png"/></p>
+<h3>Managing Alerts</h3>
+<ol>
+<li>Click on an alert to view details</li>
+<li>Take appropriate action</li>
+<li>Mark as acknowledged or resolved</li>
+</ol>
+<p><img alt="Alert Details" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/alert_details.png"/></p>
+<hr/>
+<h2>User Settings</h2>
+<h3>Profile Settings</h3>
+<p>Manage your user profile and preferences.</p>
+<p><img alt="Profile Settings" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/profile_settings.png"/></p>
+<h3>System Settings</h3>
+<p>For administrators, configure system-wide settings.</p>
+<p><img alt="System Settings" src="/Volumes/Data/Business/ScooterRentalSystem/scooter_rental_system/docs/screenshots/system_settings.png"/></p>
+<hr/>
+<h2>Tips and Best Practices</h2>
+<ol>
+<li><strong>Regular Backups</strong>: Ensure your database is backed up regularly</li>
+<li><strong>Stock Monitoring</strong>: Check the alert system daily for low stock notifications</li>
+<li><strong>Preventive Maintenance</strong>: Schedule regular scooter maintenance</li>
+<li><strong>Customer Verification</strong>: Always verify customer identity with valid ID for new rentals</li>
+<li><strong>Inventory Audits</strong>: Conduct physical inventory counts monthly</li>
+<li><strong>Security</strong>: Log out when leaving your workstation unattended</li>
+</ol>
+<hr/>
+<p>For additional support or questions, please contact the system administrator Hussein Madan Migadde Tel: 0837288948.</p>
+<p><em>Note: This user guide is based on version 1.0 of the Scooter Rental Management System. Screenshots may differ slightly in future versions.</em></p>
+<div class="footer">
+<p>Scooter Rental Management System - User Guide © 2025</p>
+<p>Generated on 2025-05-10</p>
+</div>
+</body>
+</html>

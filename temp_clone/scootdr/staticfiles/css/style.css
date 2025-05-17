@@ -1,0 +1,656 @@
+/* Main styles for Scooter Rental Management System - Metallic Theme */
+
+/* Root variables for metallic theme */
+:root {
+    --metallic-dark: #1E2328;
+    --metallic-medium: #2D3035;
+    --metallic-light: #444851;
+    --metallic-silver: #8c9199;
+    --metallic-highlight: #B0B8C0;
+    --metallic-accent: #64686F;
+    --metallic-gradient: linear-gradient(135deg, #2D3035 0%, #424750 50%, #2D3035 100%);
+    --metallic-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --metallic-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --metallic-blue: #5D7FA3;
+    --metallic-border: 1px solid rgba(255, 255, 255, 0.1);
+    --metallic-glow: 0 0 10px rgba(176, 184, 192, 0.4);
+}
+
+/* Apply dark metallic background to body */
+body {
+    background-color: var(--metallic-dark);
+    color: #e8e9ea;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--metallic-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--metallic-accent);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--metallic-silver);
+}
+
+/* Sidebar styles with metallic theme */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    padding-top: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--metallic-dark);
+    background-image: linear-gradient(to bottom, var(--metallic-dark) 0%, var(--metallic-medium) 100%);
+    border-right: var(--metallic-border);
+    box-shadow: var(--metallic-shadow);
+}
+
+/* Improve menu visibility with metallic styling */
+.sidebar .nav-link {
+    color: var(--metallic-highlight) !important;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.4rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    text-shadow: var(--metallic-text-shadow);
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--metallic-silver);
+}
+
+.sidebar .nav-link:hover {
+    background: var(--metallic-gradient);
+    transform: translateX(5px);
+    box-shadow: var(--metallic-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white !important;
+}
+
+.sidebar .nav-link.active {
+    background: var(--metallic-blue);
+    background-image: linear-gradient(135deg, var(--metallic-blue) 0%, #4B6A8C 100%);
+    color: white !important;
+    font-weight: 700;
+    box-shadow: var(--metallic-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Spacing for main content with metallic theme */
+main {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    background-color: var(--metallic-dark);
+    color: var(--metallic-highlight);
+}
+
+/* Card enhancements with metallic theme */
+.card {
+    margin-bottom: 1.5rem;
+    border: var(--metallic-border);
+    box-shadow: var(--metallic-shadow);
+    background: var(--metallic-medium) !important;
+    background-image: var(--metallic-gradient) !important;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.card-header {
+    font-weight: 600;
+    background: var(--metallic-light) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    text-shadow: var(--metallic-text-shadow);
+    padding: 1rem 1.25rem;
+    position: relative;
+}
+
+.card-header:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    width: 90%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(176, 184, 192, 0.3), transparent);
+}
+
+.card-body {
+    color: var(--metallic-highlight) !important;
+    padding: 1.25rem;
+    position: relative;
+}
+
+/* Metallic sheen effect on cards */
+.card:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: skewX(-15deg);
+    transition: 0.5s;
+}
+
+.card:hover:before {
+    left: 150%;
+}
+
+/* Improve text visibility in cards */
+.card p, .card .text-muted, .card-text {
+    color: var(--metallic-highlight) !important;
+}
+
+/* Fix text color in cards */
+.card a, .card span, .card div, .card label, .card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+    color: var(--metallic-highlight) !important;
+}
+
+/* Table enhancements with metallic theme */
+.table {
+    margin-bottom: 0;
+    color: var(--metallic-highlight) !important;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 0.375rem;
+    overflow: hidden;
+    border: var(--metallic-border);
+}
+
+/* Make sure all table cells have visible text */
+.table td, .table td * {
+    color: var(--metallic-highlight) !important;
+}
+
+.table th {
+    border-top: none;
+    background: var(--metallic-light) !important;
+    color: white !important;
+    font-weight: 600;
+    text-shadow: var(--metallic-text-shadow);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 0.75rem 1rem !important;
+    position: relative;
+}
+
+.table th a {
+    color: white !important;
+    text-decoration: none;
+}
+
+.table th a:hover {
+    text-decoration: underline;
+}
+
+.table td {
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    padding: 0.75rem 1rem !important;
+    vertical-align: middle;
+}
+
+/* Improve the striped tables with metallic theme */
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.table-hover > tbody > tr:hover {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+}
+
+/* Badge enhancements with metallic theme */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.6em;
+    border-radius: 0.25rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure badge text is visible */
+.badge.bg-secondary, .badge.bg-dark {
+    color: var(--metallic-highlight) !important;
+    background: var(--metallic-accent) !important;
+}
+
+/* Ensure status badges are clearly visible */
+.badge.bg-success, .badge.bg-danger, .badge.bg-warning, .badge.bg-info, .badge.bg-primary {
+    color: white !important;
+    font-weight: 600;
+    text-shadow: var(--metallic-text-shadow);
+}
+
+/* Form enhancements with metallic theme */
+.form-control, .form-select {
+    background-color: var(--metallic-dark) !important;
+    border: var(--metallic-border);
+    color: var(--metallic-highlight) !important;
+    border-radius: 0.375rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--metallic-blue);
+    box-shadow: 0 0 0 0.2rem rgba(93, 127, 163, 0.25);
+    background-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--metallic-highlight);
+    margin-bottom: 0.5rem;
+    text-shadow: var(--metallic-text-shadow);
+}
+
+/* Button enhancement with metallic theme */
+.btn {
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-shadow: var(--metallic-text-shadow);
+    border: var(--metallic-border);
+    box-shadow: var(--metallic-shadow);
+}
+
+.btn-primary {
+    background: var(--metallic-blue) !important;
+    background-image: linear-gradient(135deg, var(--metallic-blue) 0%, #4B6A8C 100%) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-success {
+    background-image: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-warning {
+    background-image: linear-gradient(135deg, #F9A825 0%, #F57F17 100%) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-danger {
+    background-image: linear-gradient(135deg, #C62828 0%, #B71C1C 100%) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Button metallic sheen effect */
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn:hover:before {
+    left: 100%;
+}
+
+.btn-group-sm > .btn, .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Status colors with metallic theme */
+.status-available {
+    color: #4CAF50;
+    text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    font-weight: 600;
+}
+
+.status-rented {
+    color: #64B5F6;
+    text-shadow: 0 0 5px rgba(100, 181, 246, 0.5);
+    font-weight: 600;
+}
+
+.status-maintenance {
+    color: #FFD54F;
+    text-shadow: 0 0 5px rgba(255, 213, 79, 0.5);
+    font-weight: 600;
+}
+
+.status-damaged {
+    color: #FF5252;
+    text-shadow: 0 0 5px rgba(255, 82, 82, 0.5);
+    font-weight: 600;
+}
+
+.status-retired {
+    color: #90A4AE;
+    text-shadow: 0 0 5px rgba(144, 164, 174, 0.5);
+    font-weight: 600;
+}
+
+/* Low stock highlight with metallic theme */
+tr[style*="background-color: #FFF8E1"] {
+    background-color: rgba(255, 152, 0, 0.1) !important;
+    position: relative;
+}
+
+tr[style*="background-color: #FFF8E1"] td {
+    border-bottom: 1px solid rgba(255, 152, 0, 0.3) !important;
+}
+
+tr[style*="background-color: #FFF8E1"] td.text-danger {
+    color: #FF7043 !important;
+    text-shadow: 0 0 5px rgba(255, 112, 67, 0.3);
+}
+
+/* Animation and style for alert messages with metallic theme */
+.alert {
+    animation: fadeIn 0.5s;
+    border: var(--metallic-border);
+    border-radius: 0.375rem;
+    box-shadow: var(--metallic-shadow);
+    background-image: var(--metallic-gradient) !important;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.alert:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: 0.5s;
+}
+
+.alert-success {
+    border-left: 4px solid #4CAF50 !important;
+}
+
+.alert-warning {
+    border-left: 4px solid #FFD54F !important;
+}
+
+.alert-danger {
+    border-left: 4px solid #FF5252 !important;
+}
+
+.alert-info {
+    border-left: 4px solid #64B5F6 !important;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Logo styling */
+.circular-logo {
+    border-radius: 50%;
+    border: 2px solid var(--metallic-silver);
+    box-shadow: var(--metallic-shadow);
+    overflow: hidden;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .sidebar {
+        height: auto;
+        position: relative;
+    }
+    
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .btn-group > .btn {
+        flex: 1 1 auto;
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    /* Hide non-printable elements */
+    .sidebar, .btn, .no-print, .btn-toolbar, .navbar, .form-buttons, 
+    #page_actions, .card-header a.btn, .dropdown-menu, .pagination,
+    footer, .alert, nav, .nav-tabs, .search-form, .filters-form {
+        display: none !important;
+    }
+    
+    /* Keep buttons with print class visible */
+    .btn.print-visible {
+        display: inline-block !important;
+    }
+    
+    /* Main layout adjustments */
+    body {
+        padding: 0 !important;
+        margin: 0 !important;
+        background-color: white !important;
+        color: black !important;
+        font-size: 12pt;
+        width: 100%;
+    }
+    
+    .container-fluid, .container, main, .content-wrapper {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Add header with logo and title */
+    body::before {
+        content: "Scooter Rental Management System";
+        display: block;
+        text-align: center;
+        font-size: 18pt;
+        font-weight: bold;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #000;
+        padding-bottom: 10px;
+    }
+    
+    /* Card styling */
+    .card {
+        border: 1px solid #ddd;
+        box-shadow: none;
+        margin: 0 0 15px 0 !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        color: black !important;
+        background-color: white !important;
+    }
+    
+    .card-header, .card-body, .card-footer {
+        background-color: white !important;
+        color: black !important;
+        padding: 10px !important;
+        border-color: #ddd !important;
+    }
+    
+    .card-header {
+        border-bottom: 2px solid #000 !important;
+        font-weight: bold;
+    }
+    
+    /* Table styling */
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: black !important;
+        border-collapse: collapse;
+        font-size: 10pt;
+    }
+    
+    .table th, .table td {
+        padding: 5px !important;
+        border: 1px solid #ddd !important;
+        color: black !important;
+        text-align: left;
+    }
+    
+    .table thead th {
+        border-bottom: 2px solid #000 !important;
+        background-color: #f1f1f1 !important;
+        font-weight: bold;
+    }
+    
+    /* Badge and status indicators */
+    .badge {
+        border: 1px solid #000;
+        padding: 2px 5px;
+        color: black !important;
+        background-color: white !important;
+        font-weight: normal;
+    }
+    
+    /* Color-coded statuses in print */
+    .badge.bg-success::before {
+        content: "✓ ";
+    }
+    
+    .badge.bg-danger::before {
+        content: "✗ ";
+    }
+    
+    .badge.bg-warning::before {
+        content: "! ";
+    }
+    
+    .badge.bg-info::before {
+        content: "i ";
+    }
+    
+    /* Footer on each page */
+    .print-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+        font-size: 9pt;
+        border-top: 1px solid #ddd;
+        display: block !important;
+    }
+    
+    /* Print date */
+    .print-footer::after {
+        content: "Printed on " attr(data-date);
+        display: block;
+        font-size: 8pt;
+        color: #666;
+    }
+    
+    /* Page formatting */
+    @page {
+        margin: 1.5cm 1cm;
+        size: portrait;
+    }
+    
+    /* Add page numbers */
+    @page {
+        @bottom-right {
+            content: "Page " counter(page) " of " counter(pages);
+            font-size: 8pt;
+        }
+    }
+    
+    /* Avoid breaking inside important elements */
+    h1, h2, h3, h4, h5, h6, .print-section, tr, .avoid-break {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    
+    /* Force page breaks where needed */
+    .page-break-after {
+        page-break-after: always;
+        break-after: page;
+    }
+    
+    /* Expand row details in tables */
+    .collapse.show {
+        display: block !important;
+    }
+    
+    /* Special styles for specific templates */
+    /* Rental detail print styles */
+    .rental-detail .card-title {
+        font-size: 14pt;
+        font-weight: bold;
+    }
+    
+    /* Job card print styles */
+    .job-card-detail .checklist-item.completed::before {
+        content: "✓";
+        margin-right: 5px;
+    }
+    
+    /* Parts inventory print styles */
+    .parts-inventory .low-stock {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+    
+    /* Make links visible but without underlines */
+    a {
+        text-decoration: none;
+        color: black !important;
+    }
+    
+    /* Remove box shadows and background colors */
+    * {
+        box-shadow: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    /* Maximize content width */
+    .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-md-9, .col-md-12,
+    .col-lg-3, .col-lg-4, .col-lg-6, .col-lg-8, .col-lg-9, .col-lg-12 {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="120px" viewBox="0 0 200 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>Scooter Left View</title>
+  <g stroke="black" stroke-width="1" fill="none">
+    <!-- Frame -->
+    <path d="M50,90 L90,90 L120,70 L150,70" />
+    
+    <!-- Front Wheel -->
+    <circle cx="150" cy="90" r="20" />
+    
+    <!-- Rear Wheel -->
+    <circle cx="50" cy="90" r="20" />
+    
+    <!-- Seat -->
+    <path d="M90,70 L110,70 L110,60 L90,60 Z" />
+    
+    <!-- Handles -->
+    <path d="M120,70 L130,50" />
+    <path d="M130,50 L140,50" />
+    
+    <!-- Engine block -->
+    <rect x="70" y="75" width="30" height="15" />
+    
+    <!-- Footrest -->
+    <path d="M90,90 L120,90" />
+    
+    <!-- Headlight -->
+    <circle cx="140" cy="60" r="5" />
+  </g>
+</svg>

@@ -1,0 +1,158 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}Buy a Scooter - ScootDr{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="mb-5">Buy a Scooter</h1>
+        
+        <!-- Latest Models -->
+        <h2 class="mb-4">Latest Models</h2>
+        <div class="row">
+            {% for product in latest_products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 product-card">
+                    <div class="badge bg-danger position-absolute" style="top: 10px; right: 10px;">NEW</div>
+                    <img src="{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.description|truncatechars:80 }}</p>
+                        <p class="fw-bold">R{{ product.price }}</p>
+                    </div>
+                    <div class="card-footer bg-white d-flex justify-content-between align-items-center">
+                        <a href="{% url 'landing:product_detail' product.id %}" class="btn btn-outline-primary">View Details</a>
+                        <button class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">New models coming soon!</div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Top Categories -->
+        <h2 class="mb-4 mt-5">Browse by Category</h2>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center">
+                    <img src="/static/images/category-commuter.jpg" class="card-img-top" alt="Commuter Scooters">
+                    <div class="card-body">
+                        <h5 class="card-title">Commuter Scooters</h5>
+                        <p class="card-text">Perfect for daily urban commuting</p>
+                        <a href="{% url 'landing:products' %}?category=commuter" class="btn btn-primary">Browse</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center">
+                    <img src="/static/images/category-sport.jpg" class="card-img-top" alt="Sport Scooters">
+                    <div class="card-body">
+                        <h5 class="card-title">Sport Scooters</h5>
+                        <p class="card-text">High performance for the enthusiast</p>
+                        <a href="{% url 'landing:products' %}?category=sport" class="btn btn-primary">Browse</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center">
+                    <img src="/static/images/category-electric.jpg" class="card-img-top" alt="Electric Scooters">
+                    <div class="card-body">
+                        <h5 class="card-title">Electric Scooters</h5>
+                        <p class="card-text">Eco-friendly and efficient options</p>
+                        <a href="{% url 'landing:products' %}?category=electric" class="btn btn-primary">Browse</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center">
+                    <img src="/static/images/category-luxury.jpg" class="card-img-top" alt="Luxury Scooters">
+                    <div class="card-body">
+                        <h5 class="card-title">Luxury Scooters</h5>
+                        <p class="card-text">Premium models with advanced features</p>
+                        <a href="{% url 'landing:products' %}?category=luxury" class="btn btn-primary">Browse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Featured Brands -->
+        <h2 class="mb-4 mt-5">Featured Brands</h2>
+        <div class="row align-items-center text-center">
+            <div class="col-6 col-md-2 mb-4">
+                <img src="/static/images/brand-honda.png" alt="Honda" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-6 col-md-2 mb-4">
+                <img src="/static/images/brand-yamaha.png" alt="Yamaha" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-6 col-md-2 mb-4">
+                <img src="/static/images/brand-vespa.png" alt="Vespa" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-6 col-md-2 mb-4">
+                <img src="/static/images/brand-suzuki.png" alt="Suzuki" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-6 col-md-2 mb-4">
+                <img src="/static/images/brand-piaggio.png" alt="Piaggio" class="img-fluid" style="max-height: 80px;">
+            </div>
+            <div class="col-6 col-md-2 mb-4">
+                <img src="/static/images/brand-aprilia.png" alt="Aprilia" class="img-fluid" style="max-height: 80px;">
+            </div>
+        </div>
+        
+        <!-- Buying Guide -->
+        <div class="card mt-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Scooter Buying Guide</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4>How to Choose the Right Scooter</h4>
+                        <p>When choosing a scooter, consider these important factors:</p>
+                        <ul>
+                            <li><strong>Engine Size:</strong> Determines power and speed capabilities</li>
+                            <li><strong>Commuting Distance:</strong> Different models are optimal for short vs. long commutes</li>
+                            <li><strong>Terrain:</strong> Urban vs. suburban riding conditions</li>
+                            <li><strong>Storage Needs:</strong> Consider under-seat storage capacity for your needs</li>
+                            <li><strong>Budget:</strong> Consider both purchase price and operating costs</li>
+                        </ul>
+                        <p>Our team of experts is available to help you find the perfect scooter based on your specific needs and preferences.</p>
+                        <a href="{% url 'landing:contact' %}" class="btn btn-primary">Contact Our Experts</a>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Financing Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>We offer flexible financing options to help you get the scooter you want:</p>
+                                <ul>
+                                    <li>Competitive interest rates</li>
+                                    <li>Flexible payment terms</li>
+                                    <li>Quick approval process</li>
+                                    <li>Trade-in options available</li>
+                                </ul>
+                                <a href="{% url 'landing:financing' %}" class="btn btn-outline-primary btn-sm">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="call-to-action">
+    <div class="container text-center">
+        <h2 class="mb-3">Ready to Find Your Perfect Scooter?</h2>
+        <p class="lead mb-4">Browse our extensive collection or visit our showroom</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'landing:products' %}" class="btn btn-primary btn-lg">Browse All Products</a>
+            <a href="{% url 'landing:contact' %}" class="btn btn-outline-dark btn-lg">Visit Our Showroom</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

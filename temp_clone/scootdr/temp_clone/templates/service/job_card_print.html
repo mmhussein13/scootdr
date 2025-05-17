@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load service_extras %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/print-job-card.css' %}">
+{% endblock %}
+
+{% block title %}Job Card #{{ job_card.job_card_number }} - Print View{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="no-print">Job Card - Print View</h1>
+    <button onclick="window.print();" class="btn btn-primary no-print">
+        <i class="fas fa-print"></i> Print Now
+    </button>
+</div>
+{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group no-print" role="group">
+    <a href="{% url 'service:job_card_detail' pk=job_card.pk %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Job Card
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Regular content view - this will be hidden during print -->
+<div class="card mb-4 no-print">
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> This is a print-friendly view of the job card. Click the "Print Now" button to print.
+        </div>
+        <p>Job Card #{{ job_card.job_card_number }} will be printed in the format shown below.</p>
+    </div>
+</div>
+
+<!-- Special print-only job card that follows the requested format -->
+<div class="print-job-card">
+    <!-- Header with logos and title -->
+    <div class="job-card-header">
+        <div class="company-logo">
+            <img src="{% static 'images/scoot_dr_logo.jpeg' %}" alt="Scoot Dr. Logo" height="60">
+        </div>
+        <div class="company-name">
+            FLEET VEHICLE SERVICES & REPAIRS
+        </div>
+        <div class="lab-logo">
+            <img src="{% static 'images/Lancet-Logo-Colour.png' %}" alt="Lancet Labs Logo" height="60">
+        </div>
+    </div>
+    
+    <!-- Basic Info Row -->
+    <div class="job-card-info-row">
+        <div class="form-group">
+            <label>DATE:</label>
+            <span class="value">{{ job_card.date_created|date:"d-m-Y" }}</span>
+        </div>
+        <div class="form-group">
+            <label>SALES ORDER:</label>
+            <span class="value">{{ job_card.job_card_number }}</span>
+        </div>
+    </div>
+    
+    <!-- Scooter Details Row -->
+    <div class="job-card-info-row">
+        <div class="form-group">
+            <label>KEY:</label>
+            <span class="value">{{ job_card.scooter.vin|slice:":3" }}</span>
+        </div>
+        <div class="form-group">
+            <label>COLOUR:</label>
+            <span class="value">{{ job_card.scooter.color }}</span>
+        </div>
+    </div>
+    
+    <div class="job-card-info-row">
+        <div class="form-group">
+            <label>MODEL:</label>
+            <span class="value">{{ job_card.scooter.make }} {{ job_card.scooter.model }}</span>
+        </div>
+        <div class="form-group">
+            <label>MILEAGE:</label>
+            <span class="value" style="letter-spacing: 5px;">{{ job_card.mileage }}</span>
+        </div>
+    </div>
+    
+    <div class="job-card-info-row">
+        <div class="form-group">
+            <label>LIC:</label>
+            <span class="value" style="letter-spacing: 5px;">{{ job_card.scooter.license_number|default:"" }}</span>
+        </div>
+        <div class="form-group">
+            <label>VIN:</label>
+            <span class="value">{{ job_card.scooter.vin }}</span>
+        </div>
+    </div>
+    
+    <div class="header-note">
+        <strong>NB: Did you check the previous Service & Client history!!</strong>
+    </div>
+    
+    <!-- Technician & Service Types -->
+    <div class="technician-group">
+        <label style="margin-right: 10px; font-weight: bold;">TECHNICIAN:</label>
+        <div style="display: flex; justify-content: space-around; width: 100%;">
+            {% for name in "CHRIS IVOR DOUBT ADRICH HUSSEIN ELLECK TRYMORE"|split:" " %}
+                <div style="text-align: center; margin: 0 5px;">
+                    <span class="checkmark" style="margin-right: 4px; border: 1px solid #000; display: inline-block; width: 15px; height: 15px; text-align: center; vertical-align: middle;">
+                        {% if job_card.technician.get_full_name|default:job_card.technician.username == name %}✓{% endif %}
+                    </span>
+                    {{ name }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div style="display: flex; flex-direction: row; justify-content: space-around; margin: 15px 0; border: 1px solid #ccc; padding: 5px;">
+        <div>
+            <span class="checkmark" style="border: 1px solid #000; display: inline-block; width: 15px; height: 15px; text-align: center; vertical-align: middle;">
+                {% if 'service' in job_card.description|lower %}✓{% endif %}
+            </span>
+            <label style="font-weight: bold;">SERVICE</label>
+        </div>
+        <div>
+            <span class="checkmark" style="border: 1px solid #000; display: inline-block; width: 15px; height: 15px; text-align: center; vertical-align: middle;">
+                {% if 'repair' in job_card.description|lower %}✓{% endif %}
+            </span>
+            <label style="font-weight: bold;">REPAIR</label>
+        </div>
+        <div>
+            <span class="checkmark" style="border: 1px solid #000; display: inline-block; width: 15px; height: 15px; text-align: center; vertical-align: middle;">
+                {% if 'quote' in job_card.description|lower %}✓{% endif %}
+            </span>
+            <label style="font-weight: bold;">QUOTE</label>
+        </div>
+        <div>
+            <span class="checkmark" style="border: 1px solid #000; display: inline-block; width: 15px; height: 15px; text-align: center; vertical-align: middle;">
+                {% if 'breakdown' in job_card.description|lower %}✓{% endif %}
+            </span>
+            <label style="font-weight: bold;">BREAKDOWN</label>
+        </div>
+    </div>
+    
+    <!-- Client Notes and Technical Notes in a more compact layout -->
+    <div style="display: flex; gap: 8px;">
+        <div class="client-notes" style="flex: 1;">
+            <div class="client-notes-header">CLIENT NOTES</div>
+            <div class="notes-item" style="font-size: 8pt;">{{ job_card.notes|truncate_words_start:15 }}</div>
+        </div>
+        
+        <div class="technical-notes" style="flex: 1;">
+            <div class="technical-notes-header">TECHNICAL NOTES</div>
+            <div class="notes-item" style="font-size: 8pt;">{{ job_card.description|truncate_words_start:15 }}</div>
+        </div>
+    </div>
+    
+    <!-- Parts List -->
+    <div class="parts-section">
+        <div class="parts-header">NEW PARTS SUPPLY AND FIT</div>
+        <table class="parts-table">
+            <thead>
+                <tr>
+                    <th class="parts-header" width="30%">CODE / PART NUMBER</th>
+                    <th class="parts-header" width="70%">DESCRIPTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if parts_used %}
+                    {% for part_item in parts_used %}
+                        <tr>
+                            <td width="30%">{{ part_item.part.part_number }}</td>
+                            <td width="70%">
+                                <span style="display: inline-block; width: 10px; text-align: center;">&gt;</span>
+                                {{ part_item.part.name }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">No parts recorded</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Scooter Diagrams - All 4 views of a Vespa scooter in a more compact format -->
+    <div class="scooter-diagrams">
+        <div class="scooter-diagram">
+            <div class="diagram-label">LEFT</div>
+            <img src="{% static 'images/vespa_left.png' %}" alt="Left View">
+        </div>
+        <div class="scooter-diagram">
+            <div class="diagram-label">RIGHT</div>
+            <img src="{% static 'images/vespa_right.png' %}" alt="Right View">
+        </div>
+        <div class="scooter-diagram">
+            <div class="diagram-label">FRONT</div>
+            <img src="{% static 'images/vespa_front.png' %}" alt="Front View">
+        </div>
+        <div class="scooter-diagram">
+            <div class="diagram-label">BACK</div>
+            <img src="{% static 'images/vespa_back.png' %}" alt="Back View">
+        </div>
+    </div>
+    
+    <!-- Service Checkboxes -->
+    <div class="services-section">
+        <div class="services-column">
+            <div class="service-option">
+                <span class="checkmark">{% if 'wash' in job_card.description|lower %}✓{% endif %}</span>
+                <label>WASH</label>
+            </div>
+            <div class="service-option">
+                <span class="checkmark">{% if 'test' in job_card.description|lower %}✓{% endif %}</span>
+                <label>TEST RIDE</label>
+            </div>
+            <div class="service-option">
+                <span class="checkmark">{% if job_card.status == 'completed' %}✓{% endif %}</span>
+                <label>SERVICE STICKER</label>
+            </div>
+            {% if checklist_items %}
+                <div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 10px;">
+                    <strong>CHECKLIST:</strong>
+                    {% for item in checklist_items %}
+                        <div class="service-option" style="margin-left: 15px;">
+                            <span class="checkmark">{% if item.is_checked %}✓{% endif %}</span>
+                            <label>{{ item.item_name }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        <div class="services-column">
+            <div class="service-option">
+                <span class="checkmark"></span>
+                <label>COLLECTION</label>
+            </div>
+            <div class="service-option">
+                <span class="checkmark"></span>
+                <label>DELIVERY</label>
+            </div>
+            <div class="service-option">
+                <span class="checkmark"></span>
+                <label>CONSUMABLES</label>
+            </div>
+            <div class="service-option">
+                <label>LABOUR - HOURS:</label>
+                <span class="value" style="min-width: 50px; display: inline-block; border-bottom: 1px solid #000;">{{ job_card.labor_hours }} Hrs</span>
+            </div>
+            <div class="service-option">
+                <label>TOTAL:</label>
+                <span class="value" style="min-width: 50px; display: inline-block; border-bottom: 1px solid #000;">R{{ total_cost }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Administration -->
+    <div class="admin-section">Lancet Administration only</div>
+    
+    <div class="signature-section">
+        <div class="signature-field">
+            <label>Date: </label>
+            <span class="value">{{ job_card.date_updated|date:"d F Y" }}</span>
+        </div>
+        <div class="signature-field">
+            <label>Manager Name: </label>
+            <span class="signature-line"></span>
+        </div>
+        <div class="signature-field">
+            <label>Signature: </label>
+            <span class="signature-line"></span>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Format technician name display
+    document.addEventListener('DOMContentLoaded', function() {
+        // Split filter for Django templates
+        String.prototype.split = function(sep) {
+            return this.toString().split(sep);
+        };
+    });
+</script>
+{% endblock %}
