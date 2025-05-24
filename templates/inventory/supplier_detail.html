@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Supplier Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Supplier Details</h1>
+        <div>
+            <a href="{% url 'inventory:supplier_update' supplier.id %}" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit Supplier
+            </a>
+            <a href="{% url 'inventory:supplier_list' %}" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Back to Suppliers
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages are already shown in base.html -->
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Supplier Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Name:</div>
+                        <div class="col-md-8">{{ supplier.name }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Contact Person:</div>
+                        <div class="col-md-8">{{ supplier.contact_person }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Phone:</div>
+                        <div class="col-md-8">{{ supplier.phone }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Email:</div>
+                        <div class="col-md-8">{{ supplier.email }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Website:</div>
+                        <div class="col-md-8">
+                            {% if supplier.website %}
+                                <a href="{{ supplier.website }}" target="_blank">{{ supplier.website }}</a>
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Address:</div>
+                        <div class="col-md-8">{{ supplier.address|linebreaks }}</div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Account Number:</div>
+                        <div class="col-md-8">
+                            {% if supplier.account_number %}
+                                {{ supplier.account_number }}
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Payment Terms:</div>
+                        <div class="col-md-8">
+                            {% if supplier.payment_terms %}
+                                {{ supplier.payment_terms }}
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Status:</div>
+                        <div class="col-md-8">
+                            <span class="badge {% if supplier.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                {% if supplier.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 fw-bold">Notes:</div>
+                        <div class="col-md-8">{{ supplier.notes|linebreaks|default:"None" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Purchase History</h5>
+                    <a href="{% url 'inventory:purchase_create' %}" class="btn btn-sm btn-light">
+                        <i class="fas fa-plus"></i> New Purchase
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for purchase in purchases %}
+                                    <tr>
+                                        <td>{{ purchase.invoice_number }}</td>
+                                        <td>{{ purchase.invoice_date }}</td>
+                                        <td>R {{ purchase.total_amount }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if purchase.status == 'paid' %}bg-success
+                                                {% elif purchase.status == 'partial' %}bg-warning
+                                                {% elif purchase.status == 'cancelled' %}bg-danger
+                                                {% else %}bg-info{% endif %}">
+                                                {{ purchase.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'inventory:purchase_detail' purchase.id %}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No purchase history found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

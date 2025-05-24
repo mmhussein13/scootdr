@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Panel - Scooter Rental System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Total Users</h6>
+                        <h3 class="mb-0">{{ user_count }}</h3>
+                    </div>
+                    <svg width="48" height="48" fill="currentColor" class="bi bi-people text-white-50" viewBox="0 0 16 16">
+                        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002a.274.274 0 0 1-.014.002H7.022zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.936 9.28a5.88 5.88 0 0 0-1.23-.247A7.35 7.35 0 0 0 5 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10A5.493 5.493 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275zM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Total Rentals</h6>
+                        <h3 class="mb-0">{{ rental_count }}</h3>
+                    </div>
+                    <svg width="48" height="48" fill="currentColor" class="bi bi-cart text-white-50" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50">Total Revenue</h6>
+                        <h3 class="mb-0">R{{ revenue }}</h3>
+                    </div>
+                    <svg width="48" height="48" fill="currentColor" class="bi bi-currency-dollar text-white-50" viewBox="0 0 16 16">
+                        <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73l.348.086z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Manage Rentals</h5>
+    </div>
+    <div class="card-body">
+        {% if rentals %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ref #</th>
+                            <th>User</th>
+                            <th>Scooter</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Total Price</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rental in rentals %}
+                            <tr>
+                                <td>{{ rental['reference_id'] }}</td>
+                                <td>{{ rental['user_name'] }} <br><small class="text-muted">{{ rental['user_email'] }}</small></td>
+                                <td>{{ rental['category_name'] }} <br><small class="text-muted">{{ rental['description'] }}</small></td>
+                                <td>{{ rental['start_date'] }}</td>
+                                <td>{{ rental['end_date'] }}</td>
+                                <td>R{{ rental['total_price'] }}</td>
+                                <td>
+                                    {% if rental['status'] == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif rental['status'] == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                    {% elif rental['status'] == 'completed' %}
+                                        <span class="badge bg-info">Completed</span>
+                                    {% elif rental['status'] == 'cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Update
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ url_for('update_status', rental_id=rental['id'], status='confirmed') }}">Confirm</a></li>
+                                            <li><a class="dropdown-item" href="{{ url_for('update_status', rental_id=rental['id'], status='completed') }}">Complete</a></li>
+                                            <li><a class="dropdown-item" href="{{ url_for('update_status', rental_id=rental['id'], status='cancelled') }}">Cancel</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info mb-0">
+                <p class="mb-0">No rentals in the system yet.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

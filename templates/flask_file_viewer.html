@@ -1,0 +1,50 @@
+{% extends 'flask_base.html' %}
+
+{% block title %}File Viewer - {{ file_info.path }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    pre {
+        background-color: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+    }
+    .file-path {
+        background-color: #e9ecef;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left"></i> Back to Project Overview
+        </a>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>File Viewer</h2>
+            </div>
+            <div class="card-body">
+                <div class="file-path">
+                    <i class="fas fa-file-code me-2"></i> <strong>{{ file_info.path }}</strong>
+                </div>
+                
+                {% if file_info.extension in ['.py', '.js', '.html', '.css', '.txt', '.md', '.json', '.yml', '.yaml', '.xml', '.sql'] %}
+                    <pre><code>{{ file_info.content }}</code></pre>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> This file type may not be viewable in the browser.
+                    </div>
+                    <pre>{{ file_info.content }}</pre>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

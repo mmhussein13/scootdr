@@ -1,0 +1,418 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Service Management{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'service:job_card_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Job Cards
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.job_card_number.id_for_label }}" class="form-label">Job Card Number:</label>
+                            {{ form.job_card_number }}
+                            {% if form.job_card_number.errors %}
+                                <div class="text-danger">{{ form.job_card_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.scooter.id_for_label }}" class="form-label">Scooter:</label>
+                            {{ form.scooter }}
+                            {% if form.scooter.errors %}
+                                <div class="text-danger">{{ form.scooter.errors }}</div>
+                            {% endif %}
+                            {% if form.scooter.help_text %}
+                                <small class="form-text text-muted">{{ form.scooter.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.mileage.id_for_label }}" class="form-label">Current Mileage:</label>
+                            {{ form.mileage }}
+                            {% if form.mileage.errors %}
+                                <div class="text-danger">{{ form.mileage.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">Priority:</label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                                <div class="text-danger">{{ form.priority.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.technician.id_for_label }}" class="form-label">Technician:</label>
+                            {{ form.technician }}
+                            {% if form.technician.errors %}
+                                <div class="text-danger">{{ form.technician.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.estimated_completion.id_for_label }}" class="form-label">Estimated Completion:</label>
+                            {{ form.estimated_completion }}
+                            {% if form.estimated_completion.errors %}
+                                <div class="text-danger">{{ form.estimated_completion.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.actual_completion.id_for_label }}" class="form-label">Actual Completion:</label>
+                            {{ form.actual_completion }}
+                            {% if form.actual_completion.errors %}
+                                <div class="text-danger">{{ form.actual_completion.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.labor_hours.id_for_label }}" class="form-label">Labor Hours:</label>
+                            {{ form.labor_hours }}
+                            {% if form.labor_hours.errors %}
+                                <div class="text-danger">{{ form.labor_hours.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.labor_rate.id_for_label }}" class="form-label">Labor Rate (R):</label>
+                            {{ form.labor_rate }}
+                            {% if form.labor_rate.errors %}
+                                <div class="text-danger">{{ form.labor_rate.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.total_cost.id_for_label }}" class="form-label">Total Cost (R):</label>
+                            {{ form.total_cost }}
+                            {% if form.total_cost.errors %}
+                                <div class="text-danger">{{ form.total_cost.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">This will be calculated automatically</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description:</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes:</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Parts Used</h5>
+                        <button type="button" class="btn btn-sm btn-success" id="add-part-row">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    {{ formset.management_form }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="parts-table">
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price (R)</th>
+                                    <th>Total Price (R)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parts-tbody">
+                                {% for form in formset %}
+                                    <tr class="part-form">
+                                        <td>
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
+                                            {% endfor %}
+                                            {{ form.part }}
+                                            {% if form.part.errors %}
+                                                <div class="text-danger">{{ form.part.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.quantity }}
+                                            {% if form.quantity.errors %}
+                                                <div class="text-danger">{{ form.quantity.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.unit_price }}
+                                            {% if form.unit_price.errors %}
+                                                <div class="text-danger">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.total_price }}
+                                            {% if form.total_price.errors %}
+                                                <div class="text-danger">{{ form.total_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if form.instance.pk %}
+                                                    {{ form.DELETE }}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removePartRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removePartRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-success add-row-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Job Card
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize Select2 for searchable dropdowns
+$(document).ready(function() {
+    // Initialize Select2 for scooter dropdown
+    $('.select2-searchable').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No matching results found - try a different search term";
+            }
+        }
+    });
+    
+    // Initialize part selectors
+    initializePartSelectors();
+    
+    // Setup price listeners for initial rows
+    setupPartPriceListeners();
+    
+    // Add global click handler for the "Add Item" button at the top
+    $('#add-part-row').on('click', function() {
+        addEmptyRow();
+    });
+    
+    // Add click handler for inline plus buttons
+    $(document).on('click', '.add-row-btn', function() {
+        const currentRow = $(this).closest('tr');
+        addRowAfter(currentRow);
+    });
+});
+
+// Function to initialize part selectors
+function initializePartSelectors() {
+    $('select.part-select').not('.select2-hidden-accessible').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'Type Part Number or Name to search',
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No parts found - try a different search term";
+            }
+        }
+    }).on('change', function() {
+        // When a part is selected, fetch its price
+        const partId = $(this).val();
+        if (partId) {
+            const row = $(this).closest('tr');
+            const unitPriceInput = row.find('input[name$="-unit_price"]');
+            fetchPartPrice(partId, unitPriceInput);
+        }
+    });
+    
+    // Set up quantity change handlers
+    $('input.part-quantity').on('change', function() {
+        updateTotalPrice($(this).closest('tr'));
+    });
+}
+
+// Function to update total price when quantity or unit price changes
+function updateTotalPrice(row) {
+    const quantityInput = row.find('input.part-quantity');
+    const unitPriceInput = row.find('input.part-price');
+    const totalPriceInput = row.find('input.part-total');
+    
+    if (quantityInput.val() && unitPriceInput.val()) {
+        const quantity = parseFloat(quantityInput.val());
+        const unitPrice = parseFloat(unitPriceInput.val());
+        totalPriceInput.val((quantity * unitPrice).toFixed(2));
+    }
+}
+
+// Function to set up listeners for part price updates
+function setupPartPriceListeners() {
+    $('select.part-select').each(function() {
+        const partId = $(this).val();
+        if (partId) {
+            const row = $(this).closest('tr');
+            const unitPriceInput = row.find('input[name$="-unit_price"]');
+            fetchPartPrice(partId, unitPriceInput);
+        }
+    });
+}
+
+// Function to fetch part price from API
+function fetchPartPrice(partId, unitPriceInput) {
+    if (!partId) {
+        unitPriceInput.val('');
+        return;
+    }
+    
+    fetch(`/inventory/api/parts/${partId}/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            unitPriceInput.val(data.unit_price);
+            console.log(`Auto-populated unit price: ${data.unit_price} for part ID: ${partId}`);
+            
+            // Update total price if quantity exists
+            const row = unitPriceInput.closest('tr');
+            updateTotalPrice(row);
+        })
+        .catch(error => {
+            console.error('Error fetching part details:', error);
+        });
+}
+
+// Function to add an empty row at the end of the table
+function addEmptyRow() {
+    // Get the first row as a template
+    const tbody = document.getElementById('parts-tbody');
+    const rows = tbody.querySelectorAll('tr.part-form');
+    
+    if (rows.length === 0) {
+        console.error('No existing rows to clone');
+        return;
+    }
+    
+    const firstRow = rows[0];
+    addRowAfter($(firstRow));
+}
+
+// Function to add a new row after the specified row
+function addRowAfter(currentRow) {
+    const tbody = currentRow.closest('tbody');
+    const newRow = currentRow.clone(true);
+    
+    // Clean up Select2
+    newRow.find('select').each(function() {
+        const select = $(this);
+        const selectId = select.attr('id');
+        if (selectId && select.hasClass('select2-hidden-accessible')) {
+            select.select2('destroy');
+        }
+        // Remove any existing Select2 elements
+        select.siblings('.select2-container').remove();
+        // Reset value
+        select.val('');
+    });
+    
+    // Clear input values
+    newRow.find('input:not([type="hidden"]):not([name*="DELETE"])').val('');
+    
+    // Update form index
+    const totalFormsInput = document.querySelector('input[name$="TOTAL_FORMS"]');
+    if (!totalFormsInput) {
+        console.error('TOTAL_FORMS input not found');
+        return;
+    }
+    
+    const currentFormIndex = parseInt(totalFormsInput.value);
+    totalFormsInput.value = currentFormIndex + 1;
+    
+    // Update IDs and names for the new row
+    const idRegex = new RegExp('(-\\d+-)', 'g');
+    const replacement = `-${currentFormIndex}-`;
+    
+    newRow.find('input, select, textarea, label').each(function() {
+        const el = $(this);
+        ['id', 'name', 'for'].forEach(attr => {
+            const attrValue = el.attr(attr);
+            if (attrValue && attrValue.includes('-')) {
+                el.attr(attr, attrValue.replace(idRegex, replacement));
+            }
+        });
+    });
+    
+    // Insert row after the current row
+    newRow.insertAfter(currentRow);
+    
+    // Re-initialize Select2 and event handlers
+    initializePartSelectors();
+    
+    console.log('New row added successfully');
+}
+
+// Function to remove a part row
+function removePartRow(button) {
+    // Find the current row
+    const row = button.closest('tr');
+    
+    // Check if there's a DELETE checkbox (for existing rows)
+    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+    
+    if (deleteCheckbox) {
+        // Mark for deletion and hide the row
+        deleteCheckbox.checked = true;
+        row.style.display = 'none';
+    } else {
+        // If no DELETE checkbox (new form), just remove the row
+        row.remove();
+    }
+    
+    return false; // Prevent default
+}
+</script>
+{% endblock %}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="150px" height="60px" viewBox="0 0 150 60" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>Scoot Dr. Logo</title>
+  <g stroke="none" fill="#333333">
+    <!-- Logo text -->
+    <text x="10" y="35" font-family="Arial, sans-serif" font-size="24" font-weight="bold">SCOOT DR.</text>
+    
+    <!-- Small scooter silhouette -->
+    <path d="M120,35 C115,35 115,25 120,25 C125,25 125,35 120,35 Z" />
+    <path d="M120,30 L130,30" />
+    <path d="M125,30 L125,25" />
+    <circle cx="115" cy="33" r="3" />
+    <circle cx="135" cy="33" r="3" />
+  </g>
+</svg>

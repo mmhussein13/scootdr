@@ -1,0 +1,130 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}Scooter Maintenance Tips - ScootDR{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="mb-4 text-primary">Scooter Maintenance Tips</h1>
+            <p class="lead mb-5">Proper maintenance is essential for keeping your scooter running smoothly and extending its lifespan. Here are some valuable tips to help you maintain your scooter in optimal condition.</p>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title border-bottom pb-3 mb-3">Regular Checks Before Riding</h3>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Tire Pressure:</strong> Check tire pressure at least weekly. Proper inflation ensures good handling, fuel efficiency, and tire longevity.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Brake Fluid:</strong> Verify that brake fluid levels are within the recommended range and look for any leaks or discoloration.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Oil Level:</strong> Check engine oil levels regularly, ideally before each ride for 2-stroke scooters and weekly for 4-stroke models.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Lights and Signals:</strong> Ensure all lights, indicators, and horn are functioning properly before setting off.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Fuel Level:</strong> Always start with sufficient fuel for your journey to avoid running out on the road.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <img src="/static/images/maintenance/pre-ride-check.jpg" alt="Pre-ride checks" class="img-fluid rounded" onerror="this.src='/static/images/placeholder.jpg'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title border-bottom pb-3 mb-3">Monthly Maintenance Tasks</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img src="/static/images/maintenance/monthly-tasks.jpg" alt="Monthly maintenance" class="img-fluid rounded" onerror="this.src='/static/images/placeholder.jpg'">
+                        </div>
+                        <div class="col-md-8">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Air Filter:</strong> Inspect and clean the air filter monthly or more frequently if riding in dusty conditions.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Battery Terminals:</strong> Check for corrosion on battery terminals and clean with a wire brush if necessary.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Belt/Chain:</strong> Inspect the drive belt or chain for proper tension and signs of wear.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Bolts and Fasteners:</strong> Check that all visible bolts and fasteners are tight and secure.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Throttle Operation:</strong> Verify smooth throttle operation with proper return when released.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title border-bottom pb-3 mb-3">Quarterly Service Recommendations</h3>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Oil Change:</strong> Change engine oil and filter according to manufacturer's recommendations, typically every 3 months or 3,000 km.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Spark Plugs:</strong> Inspect spark plugs for wear and replace if necessary, typically every 6 months or 6,000 km.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Brake Pads:</strong> Check brake pads for wear and replace if the thickness is below the minimum specification.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Coolant Level:</strong> For liquid-cooled scooters, check coolant level and condition, replacing as recommended.
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>Valve Clearance:</strong> For 4-stroke engines, verify valve clearance according to the service manual.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <img src="/static/images/maintenance/quarterly-service.jpg" alt="Quarterly service" class="img-fluid rounded" onerror="this.src='/static/images/placeholder.jpg'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title border-bottom pb-3 mb-3">Seasonal Maintenance</h3>
+                    <h5 class="text-primary">Preparing for Summer</h5>
+                    <ul class="mb-4">
+                        <li>Check cooling system thoroughly to prevent overheating</li>
+                        <li>Inspect tires for cracks or excessive wear from winter riding</li>
+                        <li>Clean and lubricate throttle and brake cables</li>
+                        <li>Verify air conditioning is working properly in storage compartments</li>
+                    </ul>
+                    
+                    <h5 class="text-primary">Preparing for Winter</h5>
+                    <ul>
+                        <li>Consider using winter-grade oils for better cold-weather performance</li>
+                        <li>Apply anti-corrosion products to protect against salt and moisture</li>
+                        <li>Check battery condition, as cold weather reduces battery efficiency</li>
+                        <li>Inspect headlights and add reflective elements for improved visibility</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <h4>Need Help with Maintenance?</h4>
+                <p>Our service department offers comprehensive maintenance packages and expert advice. <a href="/contact/" class="alert-link">Contact us</a> to schedule a service appointment or ask questions about maintaining your scooter.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

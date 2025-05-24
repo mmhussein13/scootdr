@@ -1,0 +1,222 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}Restoration Gallery - ScootDR{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="display-4">Scooter Restoration Gallery</h1>
+                <p class="lead text-muted">Explore our collection of beautifully restored vintage and classic scooters. Each restoration is a labor of love and craftsmanship.</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 mb-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'landing:home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'landing:restore' %}">Restoration</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Gallery</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Gallery filter buttons -->
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <div class="btn-group" role="group" aria-label="Gallery filters">
+                    <button type="button" class="btn btn-outline-primary active" data-filter="all">All</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="vespa">Vespa</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="lambretta">Lambretta</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="honda">Honda</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="other">Other</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gallery images -->
+        <div class="row gallery-container">
+            <!-- Vespa examples -->
+            <div class="col-lg-4 col-md-6 mb-4 gallery-item vespa">
+                <div class="card shadow h-100">
+                    <img src="/static/images/gallery/vespa-1.jpg" class="card-img-top gallery-image" alt="Restored Vespa Primavera" onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="card-body">
+                        <h5 class="card-title">1975 Vespa Primavera</h5>
+                        <p class="card-text">Complete frame-off restoration with original parts and custom two-tone paint.</p>
+                        <span class="badge bg-info">Vespa</span>
+                        <span class="badge bg-secondary">Vintage</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4 gallery-item vespa">
+                <div class="card shadow h-100">
+                    <img src="/static/images/gallery/vespa-2.jpg" class="card-img-top gallery-image" alt="Restored Vespa Sprint" onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="card-body">
+                        <h5 class="card-title">1968 Vespa Sprint</h5>
+                        <p class="card-text">Meticulously restored to factory specifications with period-correct details.</p>
+                        <span class="badge bg-info">Vespa</span>
+                        <span class="badge bg-secondary">Classic</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lambretta examples -->
+            <div class="col-lg-4 col-md-6 mb-4 gallery-item lambretta">
+                <div class="card shadow h-100">
+                    <img src="/static/images/gallery/lambretta-1.jpg" class="card-img-top gallery-image" alt="Restored Lambretta LI 150" onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="card-body">
+                        <h5 class="card-title">1962 Lambretta LI 150</h5>
+                        <p class="card-text">Stunning restoration with upgraded performance parts and custom exhaust.</p>
+                        <span class="badge bg-info">Lambretta</span>
+                        <span class="badge bg-secondary">Series 2</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Honda examples -->
+            <div class="col-lg-4 col-md-6 mb-4 gallery-item honda">
+                <div class="card shadow h-100">
+                    <img src="/static/images/gallery/honda-1.jpg" class="card-img-top gallery-image" alt="Restored Honda Super Cub" onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="card-body">
+                        <h5 class="card-title">1980 Honda Super Cub</h5>
+                        <p class="card-text">Completely rebuilt engine and electrical system with original paint.</p>
+                        <span class="badge bg-info">Honda</span>
+                        <span class="badge bg-secondary">Japanese</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other examples -->
+            <div class="col-lg-4 col-md-6 mb-4 gallery-item other">
+                <div class="card shadow h-100">
+                    <img src="/static/images/gallery/other-1.jpg" class="card-img-top gallery-image" alt="Restored Cushman scooter" onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="card-body">
+                        <h5 class="card-title">1955 Cushman Eagle</h5>
+                        <p class="card-text">Rare American scooter restored with attention to historical accuracy.</p>
+                        <span class="badge bg-info">Cushman</span>
+                        <span class="badge bg-secondary">American</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4 gallery-item other">
+                <div class="card shadow h-100">
+                    <img src="/static/images/gallery/other-2.jpg" class="card-img-top gallery-image" alt="Restored Zündapp Bella" onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="card-body">
+                        <h5 class="card-title">1958 Zündapp Bella</h5>
+                        <p class="card-text">German engineering restored to perfect working condition with original paint.</p>
+                        <span class="badge bg-info">Zündapp</span>
+                        <span class="badge bg-secondary">German</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact CTA -->
+        <div class="row mt-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="card shadow bg-light">
+                    <div class="card-body py-5">
+                        <h3>Love what you see?</h3>
+                        <p class="lead">We can restore your vintage scooter to its former glory or beyond.</p>
+                        <a href="{% url 'landing:contact' %}" class="btn btn-primary btn-lg mt-3">Contact Our Restoration Team</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* Styles to prevent gallery shaking */
+.gallery-item {
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.card {
+    transition: none; /* Prevent transitions on cards */
+    height: 100%;
+}
+
+.gallery-container {
+    min-height: 600px; /* Set minimum height to prevent container shrinking */
+}
+</style>
+
+{% block extra_js %}
+<script>
+    // Improved gallery filter with smoother transitions
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('[data-filter]');
+        const galleryContainer = document.querySelector('.gallery-container');
+        const items = document.querySelectorAll('.gallery-item');
+        
+        // Apply same height to all cards
+        function equalizeCardHeights() {
+            const cards = document.querySelectorAll('.gallery-item .card');
+            let maxHeight = 0;
+            
+            // Reset heights first
+            cards.forEach(card => {
+                card.style.height = 'auto';
+            });
+            
+            // Find the tallest card
+            cards.forEach(card => {
+                if (card.offsetHeight > maxHeight) {
+                    maxHeight = card.offsetHeight;
+                }
+            });
+            
+            // Apply the max height to all cards
+            if (maxHeight > 0) {
+                cards.forEach(card => {
+                    card.style.height = `${maxHeight}px`;
+                });
+            }
+        }
+        
+        // Call once on load
+        window.addEventListener('load', equalizeCardHeights);
+        // Also call on window resize
+        window.addEventListener('resize', equalizeCardHeights);
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active state
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filterValue = this.getAttribute('data-filter');
+                
+                // Use CSS opacity for smooth transitions instead of display property
+                items.forEach(item => {
+                    if (filterValue === 'all' || item.classList.contains(filterValue)) {
+                        item.style.opacity = '1';
+                        item.style.visibility = 'visible';
+                        // Use setTimeout to prevent layout shifts
+                        setTimeout(() => {
+                            item.style.display = 'block';
+                        }, 10);
+                    } else {
+                        item.style.opacity = '0';
+                        // Hide after fade out completes
+                        setTimeout(() => {
+                            item.style.display = 'none';
+                            item.style.visibility = 'hidden';
+                        }, 400);
+                    }
+                });
+                
+                // Re-equalize heights after filter
+                setTimeout(equalizeCardHeights, 500);
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

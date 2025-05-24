@@ -1,0 +1,684 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Service Management{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'service:job_card_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Job Cards
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="{{ form.job_card_number.id_for_label }}" class="form-label">Job Card Number:</label>
+                            {{ form.job_card_number }}
+                            {% if form.job_card_number.errors %}
+                                <div class="text-danger">{{ form.job_card_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.scooter.id_for_label }}" class="form-label">Scooter:</label>
+                            {{ form.scooter }}
+                            {% if form.scooter.errors %}
+                                <div class="text-danger">{{ form.scooter.errors }}</div>
+                            {% endif %}
+                            {% if form.scooter.help_text %}
+                                <small class="form-text text-muted">{{ form.scooter.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.store.id_for_label }}" class="form-label">Store:</label>
+                            {{ form.store }}
+                            {% if form.store.errors %}
+                                <div class="text-danger">{{ form.store.errors }}</div>
+                            {% endif %}
+                            {% if form.store.help_text %}
+                                <small class="form-text text-muted">{{ form.store.help_text }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.mileage.id_for_label }}" class="form-label">Current Mileage:</label>
+                            {{ form.mileage }}
+                            {% if form.mileage.errors %}
+                                <div class="text-danger">{{ form.mileage.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">Priority:</label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                                <div class="text-danger">{{ form.priority.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.technician.id_for_label }}" class="form-label">Technician:</label>
+                            {{ form.technician }}
+                            {% if form.technician.errors %}
+                                <div class="text-danger">{{ form.technician.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.estimated_completion.id_for_label }}" class="form-label">Estimated Completion:</label>
+                            {{ form.estimated_completion }}
+                            {% if form.estimated_completion.errors %}
+                                <div class="text-danger">{{ form.estimated_completion.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.actual_completion.id_for_label }}" class="form-label">Actual Completion:</label>
+                            {{ form.actual_completion }}
+                            {% if form.actual_completion.errors %}
+                                <div class="text-danger">{{ form.actual_completion.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.labor_hours.id_for_label }}" class="form-label">Labor Hours:</label>
+                            {{ form.labor_hours }}
+                            {% if form.labor_hours.errors %}
+                                <div class="text-danger">{{ form.labor_hours.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.labor_rate.id_for_label }}" class="form-label">Labor Rate (R):</label>
+                            {{ form.labor_rate }}
+                            {% if form.labor_rate.errors %}
+                                <div class="text-danger">{{ form.labor_rate.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.total_cost.id_for_label }}" class="form-label">Total Cost (R):</label>
+                            {{ form.total_cost }}
+                            {% if form.total_cost.errors %}
+                                <div class="text-danger">{{ form.total_cost.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">This will be calculated automatically</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description:</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger">{{ form.description.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Additional Notes:</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Parts Used</h5>
+                        <button type="button" class="btn btn-sm btn-success" id="add-part-row">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    {{ formset.management_form }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="parts-table">
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price (R)</th>
+                                    <th>Total Price (R)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="parts-tbody">
+                                {% for form in formset %}
+                                    <tr class="part-form">
+                                        <td>
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
+                                            {% endfor %}
+                                            {{ form.part }}
+                                            {% if form.part.errors %}
+                                                <div class="text-danger">{{ form.part.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.quantity }}
+                                            {% if form.quantity.errors %}
+                                                <div class="text-danger">{{ form.quantity.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.unit_price }}
+                                            {% if form.unit_price.errors %}
+                                                <div class="text-danger">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.total_price }}
+                                            {% if form.total_price.errors %}
+                                                <div class="text-danger">{{ form.total_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if form.instance.pk %}
+                                                    {{ form.DELETE }}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removePartRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removePartRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-success add-row-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Job Card
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize Select2 for searchable dropdowns
+$(document).ready(function() {
+    // Initialize Select2 for scooter dropdown
+    $('.select2-searchable').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No matching results found - try a different search term";
+            }
+        }
+    });
+    
+    // Initialize part selector with search
+    initializePartSelectors();
+    
+    // Initialize store-specific parts filtering if a store is already selected (e.g., when editing)
+    const initialStore = $('#id_store').val();
+    if (initialStore) {
+        console.log('Initial store detected, loading store-specific parts...');
+        $('#id_store').trigger('change');
+    }
+    
+    // Set up scooter store auto-select
+    $('#id_scooter').on('change', function() {
+        const scooterId = $(this).val();
+        if (scooterId) {
+            // Make AJAX call to get scooter details including store
+            $.ajax({
+                url: '/inventory/api/scooter-details/',
+                data: {scooter_id: scooterId},
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success && data.store_id) {
+                        $('#id_store').val(data.store_id).trigger('change');
+                        console.log(`Auto-selected store ID ${data.store_id} based on scooter`);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching scooter details:', error);
+                }
+            });
+        }
+    });
+    
+    // Set up store-specific parts filtering
+    $('#id_store').on('change', function() {
+        const storeId = $(this).val();
+        if (storeId) {
+            // Update all part selectors to filter by the selected store
+            console.log(`Store changed to ID: ${storeId}, updating parts list...`);
+            
+            // Make AJAX request to get parts for this store
+            $.ajax({
+                url: '/service/job-card/add/',
+                data: {store_id: storeId, timestamp: Date.now()},
+                dataType: 'json',
+                timeout: 30000, // 30 seconds timeout
+                cache: false,
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                success: function(data) {
+                    if (data.success) {
+                        // Clear existing part options and add new ones
+                        $('select.part-select').each(function() {
+                            const currentVal = $(this).val();
+                            $(this).empty().trigger('change');
+                            
+                            // Add option placeholder
+                            $(this).append(new Option('Select a part...', '', true, true));
+                            
+                            // Add new options from server
+                            data.parts.forEach(function(part) {
+                                const option = new Option(part.text, part.id, false, part.id == currentVal);
+                                // Store unit price as data attribute for easy access
+                                $(option).data('unit-price', part.unit_price);
+                                $(this).append(option);
+                            }.bind(this));
+                            
+                            $(this).trigger('change');
+                        });
+                        
+                        console.log(`Updated parts list with ${data.parts.length} items from store ${storeId}`);
+                        
+                        // Update scooters dropdown if data contains scooters
+                        if (data.scooters) {
+                            const scooterSelect = $('#id_scooter');
+                            const currentScooterVal = scooterSelect.val();
+                            scooterSelect.empty().trigger('change');
+                            
+                            // Add option placeholder
+                            scooterSelect.append(new Option('Select a scooter...', '', true, true));
+                            
+                            // Add new options from server
+                            data.scooters.forEach(function(scooter) {
+                                const option = new Option(scooter.text, scooter.id, false, scooter.id == currentScooterVal);
+                                scooterSelect.append(option);
+                            });
+                            
+                            scooterSelect.trigger('change');
+                            console.log(`Updated scooters list with ${data.scooters.length} items from store ${storeId}`);
+                        }
+                    } else {
+                        console.error('Error fetching store data:', data.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error when fetching store data:', error);
+                }
+            });
+        }
+    });
+    
+    // Handle the Add Item button click
+    $('#add-part-row').on('click', function() {
+        const currentRows = document.querySelectorAll('#parts-tbody tr');
+        if (currentRows.length > 0) {
+            const lastRow = currentRows[currentRows.length - 1];
+            addNewPartRow(lastRow.querySelector('.add-row-btn'));
+        }
+        return false;
+    });
+    
+    // Add click event handlers for inline plus buttons
+    document.querySelectorAll('.add-row-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            addNewPartRow(this);
+            return false;
+        });
+    });
+    
+    // Setup price listeners for initial rows
+    setupPartPriceListeners();
+});
+
+// Function to initialize any new part selectors
+function initializePartSelectors() {
+    // First destroy any existing Select2 instances to prevent duplicates
+    $('select.part-select.select2-hidden-accessible').each(function() {
+        try {
+            $(this).select2('destroy');
+        } catch (e) {
+            console.log('Error destroying Select2:', e);
+        }
+    });
+    
+    // Initialize Select2 for all part selectors
+    $('select.part-select').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'Type Part Number or Name to search',
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No parts found - try a different search term";
+            }
+        }
+    }).on('change', function() {
+        // When a part is selected, fetch its price
+        const partId = $(this).val();
+        if (partId) {
+            const row = $(this).closest('tr');
+            const unitPriceInput = row.find('input[name$="-unit_price"]');
+            fetchPartPrice(partId, unitPriceInput);
+            
+            // Log for debugging
+            console.log(`Part selected: ${partId}, fetching price...`);
+        } else {
+            // Clear the unit price if no part is selected
+            const row = $(this).closest('tr');
+            const unitPriceInput = row.find('input[name$="-unit_price"]');
+            unitPriceInput.val('');
+            
+            // Also clear the total price
+            const totalPriceInput = row.find('input[name$="-total_price"]');
+            totalPriceInput.val('');
+            
+            console.log('No part selected, cleared price fields');
+        }
+    });
+}
+
+// Function to set up listeners for part price updates
+function setupPartPriceListeners() {
+    // First, remove any existing change handlers to prevent duplicates
+    $('select.part-select').off('change.priceUpdate');
+    
+    // Add change event handlers to all part selectors
+    $('select.part-select').on('change.priceUpdate', function() {
+        const partId = $(this).val();
+        if (partId) {
+            const row = $(this).closest('tr');
+            const unitPriceInput = row.find('input[name$="-unit_price"]');
+            fetchPartPrice(partId, unitPriceInput);
+        } else {
+            // Clear price if no part selected
+            const row = $(this).closest('tr');
+            row.find('input[name$="-unit_price"]').val('');
+            row.find('input[name$="-total_price"]').val('');
+        }
+    });
+    
+    // Also trigger price fetch for any already selected parts
+    $('select.part-select').each(function() {
+        const partId = $(this).val();
+        if (partId) {
+            const row = $(this).closest('tr');
+            const unitPriceInput = row.find('input[name$="-unit_price"]');
+            fetchPartPrice(partId, unitPriceInput);
+        }
+    });
+}
+
+// Add input event listeners to quantity fields to auto-calculate totals
+function setupQuantityListeners() {
+    document.querySelectorAll('input[name*="-quantity"]').forEach(input => {
+        input.addEventListener('input', function() {
+            updateRowTotal(this.closest('tr'));
+        });
+    });
+}
+
+// Update the total price for a row based on quantity and unit price
+function updateRowTotal(row) {
+    const quantityInput = row.querySelector('input[name*="-quantity"]');
+    const unitPriceInput = row.querySelector('input[name*="-unit_price"]');
+    const totalPriceInput = row.querySelector('input[name*="-total_price"]');
+    
+    if (quantityInput && unitPriceInput && totalPriceInput) {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const unitPrice = parseFloat(unitPriceInput.value) || 0;
+        totalPriceInput.value = (quantity * unitPrice).toFixed(2);
+    }
+}
+
+// Function to fetch part price from API
+function fetchPartPrice(partId, unitPriceInput) {
+    if (!partId) {
+        unitPriceInput.val('');
+        return;
+    }
+    
+    // Make sure unitPriceInput is a jQuery object
+    if (!(unitPriceInput instanceof jQuery)) {
+        unitPriceInput = $(unitPriceInput);
+    }
+    
+    // Create a visual indicator that we're fetching the price
+    unitPriceInput.css('background-color', '#f8f9fa');
+    
+    // First try to get price from the selected option's data attribute (faster)
+    const selectedOption = $(`select.part-select option[value="${partId}"]:selected`);
+    if (selectedOption.length > 0) {
+        const cachedPrice = $(selectedOption).data('unit-price');
+        if (cachedPrice) {
+            console.log(`Using cached price for part ${partId}: R${cachedPrice}`);
+            
+            // Set the unit price value
+            unitPriceInput.val(cachedPrice);
+            
+            // Update the total price
+            const row = unitPriceInput.closest('tr');
+            const quantityInput = row.find('input.part-quantity');
+            const totalPriceInput = row.find('input.part-total');
+            
+            updateTotalPrice(quantityInput, unitPriceInput, totalPriceInput);
+            
+            // Reset background with a quick flash of success color
+            unitPriceInput.css('background-color', '#e8f4ee').animate({
+                backgroundColor: '#ffffff'
+            }, 500);
+            
+            return;
+        }
+    }
+    
+    // Log that we're falling back to the API call
+    console.log(`No cached price found for part ID: ${partId}, fetching from API...`);
+    
+    // Fall back to API call if no cached price found
+    fetch(`/inventory/api/parts/${partId}/`)
+        .then(response => {
+            if (!response.ok) {
+                console.error(`API response error: ${response.status}`);
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('API response data:', data);
+            
+            // Make sure we have unit_price data and it's valid
+            if (data && 'unit_price' in data) {
+                // Set the unit price value
+                unitPriceInput.val(data.unit_price);
+                
+                // Save to data attribute for future use
+                if (selectedOption.length > 0) {
+                    $(selectedOption).data('unit-price', data.unit_price);
+                    console.log(`Cached price ${data.unit_price} for part ${partId} for future use`);
+                }
+                
+                // Add a visual indicator that the price was successfully fetched
+                unitPriceInput.css('background-color', '#e8f4ee').animate({
+                    backgroundColor: '#ffffff'
+                }, 1000);
+                
+                console.log(`Auto-populated unit price: ${data.unit_price} for part ID: ${partId}`);
+                
+                // Update total price if quantity exists
+                const row = unitPriceInput.closest('tr');
+                const quantityInput = row.find('input[name$="-quantity"]');
+                const totalPriceInput = row.find('input[name$="-total_price"]');
+                
+                if (quantityInput.val() && unitPriceInput.val()) {
+                    const quantity = parseFloat(quantityInput.val());
+                    const unitPrice = parseFloat(unitPriceInput.val());
+                    totalPriceInput.val((quantity * unitPrice).toFixed(2));
+                    
+                    // Also add visual feedback for total price
+                    totalPriceInput.css('background-color', '#e8f4ee').animate({
+                        backgroundColor: '#ffffff'
+                    }, 1000);
+                }
+            } else {
+                console.error('API response missing unit_price:', data);
+                unitPriceInput.css('background-color', '#fff').val('');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching part details:', error);
+            // Reset any visual indicators
+            unitPriceInput.css('background-color', '#fff');
+        });
+}
+
+// Function to add a new part row
+function addNewPartRow(button) {
+    console.log("addNewPartRow function called");
+    
+    // Get the current row and clone it
+    const currentRow = button.closest('tr');
+    const tbody = currentRow.parentElement;
+    const newRow = currentRow.cloneNode(true);
+    
+    // Clean up any Select2 instances in the new row
+    newRow.querySelectorAll('select').forEach(select => {
+        const selectId = select.id;
+        if (selectId) {
+            try {
+                $('#' + selectId).select2('destroy');
+            } catch (e) {
+                console.log('Select2 not initialized for', selectId);
+            }
+        }
+        
+        // Reset to default option
+        select.selectedIndex = 0;
+        
+        // Remove any Select2 containers
+        $(select).siblings('.select2-container').remove();
+    });
+    
+    // Clear all input values in the new row
+    newRow.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+            input.value = '';
+        }
+    });
+    
+    // Try various ways to get the formset management form
+    let totalForms = document.querySelector('[name="jobcarditem_set-TOTAL_FORMS"]');
+    if (!totalForms) totalForms = document.querySelector('[name="partsused_set-TOTAL_FORMS"]');
+    if (!totalForms) totalForms = document.querySelector('input[name$="-TOTAL_FORMS"]');
+    
+    // If we have a valid management form
+    if (totalForms) {
+        // Get the current index
+        const currentIndex = parseInt(totalForms.value);
+        console.log("Current index:", currentIndex);
+        
+        // Update all the field names and IDs in the new row
+        newRow.querySelectorAll('input, select, textarea, label').forEach(element => {
+            const name = element.getAttribute('name');
+            if (name && name.includes('-')) {
+                const parts = name.split('-');
+                if (parts.length >= 2) {
+                    parts[1] = currentIndex.toString();
+                    const newName = parts.join('-');
+                    element.setAttribute('name', newName);
+                }
+            }
+            
+            const id = element.getAttribute('id');
+            if (id && id.includes('-')) {
+                const parts = id.split('-');
+                if (parts.length >= 2) {
+                    parts[1] = currentIndex.toString();
+                    const newId = parts.join('-');
+                    element.setAttribute('id', newId);
+                }
+            }
+        });
+        
+        // Check if there's a valid management form
+        totalForms.value = (currentIndex + 1).toString();
+        console.log("Updated total forms:", totalForms.value);
+        
+        // Insert the new row after the current row
+        tbody.insertBefore(newRow, currentRow.nextSibling);
+        
+        // Re-init Select2 for the newly added row
+        setTimeout(function() {
+            initializePartSelectors();
+            setupQuantityListeners();
+            
+            // Add direct event handler for the new row's part selector to ensure price fetching works
+            const newPartSelect = newRow.querySelector('select.part-select');
+            if (newPartSelect) {
+                $(newPartSelect).on('change', function() {
+                    const partId = $(this).val();
+                    if (partId) {
+                        const unitPriceInput = $(this).closest('tr').find('input[name$="-unit_price"]');
+                        fetchPartPrice(partId, unitPriceInput);
+                    }
+                });
+            }
+        }, 50);
+        
+        console.log("Successfully added new part row");
+    } else {
+        console.error("Could not find the management form, cannot add new row");
+    }
+    
+    return false;
+}
+
+// Function to remove a part row
+function removePartRow(button) {
+    // Find the current row
+    const row = button.closest('tr');
+    
+    // Check if there's a DELETE checkbox (for existing rows)
+    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+    
+    if (deleteCheckbox) {
+        // Mark for deletion and hide the row
+        deleteCheckbox.checked = true;
+        row.style.display = 'none';
+    } else {
+        // If no DELETE checkbox (new form), just remove the row
+        row.remove();
+    }
+    
+    return false; // Prevent default
+}
+</script>
+{% endblock %}

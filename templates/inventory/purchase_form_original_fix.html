@@ -1,0 +1,405 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Inventory Management{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'inventory:purchase_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Purchases
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.purchase_number.id_for_label }}" class="form-label">Purchase Number:</label>
+                            {{ form.purchase_number }}
+                            {% if form.purchase_number.errors %}
+                                <div class="text-danger">{{ form.purchase_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.supplier.id_for_label }}" class="form-label">Supplier:</label>
+                            {{ form.supplier }}
+                            {% if form.supplier.errors %}
+                                <div class="text-danger">{{ form.supplier.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.purchase_date.id_for_label }}" class="form-label">Purchase Date:</label>
+                            {{ form.purchase_date }}
+                            {% if form.purchase_date.errors %}
+                                <div class="text-danger">{{ form.purchase_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.expected_delivery.id_for_label }}" class="form-label">Expected Delivery:</label>
+                            {{ form.expected_delivery }}
+                            {% if form.expected_delivery.errors %}
+                                <div class="text-danger">{{ form.expected_delivery.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.total_amount.id_for_label }}" class="form-label">Total Amount (R):</label>
+                            {{ form.total_amount }}
+                            {% if form.total_amount.errors %}
+                                <div class="text-danger">{{ form.total_amount.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">This will be calculated automatically</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Notes:</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Purchase Items</h5>
+                        <button type="button" class="btn btn-sm btn-success" id="add-item-row">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    {{ formset.management_form }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Store</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price (R)</th>
+                                    <th>Total Price (R)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-tbody">
+                                {% for form in formset %}
+                                    <tr class="item-form">
+                                        <td>
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
+                                            {% endfor %}
+                                            {{ form.part }}
+                                            {% if form.part.errors %}
+                                                <div class="text-danger">{{ form.part.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.store }}
+                                            {% if form.store.errors %}
+                                                <div class="text-danger">{{ form.store.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.quantity }}
+                                            {% if form.quantity.errors %}
+                                                <div class="text-danger">{{ form.quantity.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.unit_price }}
+                                            {% if form.unit_price.errors %}
+                                                <div class="text-danger">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.total_price }}
+                                            {% if form.total_price.errors %}
+                                                <div class="text-danger">{{ form.total_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if form.instance.pk %}
+                                                    {{ form.DELETE }}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-success add-row-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Purchase
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize supplier dropdown with Select2
+    $('.select2-basic').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
+    });
+    
+    // Initialize part selectors with searchable options
+    initializePurchasePartSelectors();
+    
+    // Handle the Add Item button click
+    $('#add-item-row').on('click', function() {
+        const currentRows = document.querySelectorAll('#items-tbody tr');
+        if (currentRows.length > 0) {
+            const lastRow = currentRows[currentRows.length - 1];
+            addNewRow(lastRow.querySelector('.add-row-btn'));
+        }
+        return false;
+    });
+    
+    // Add click event handlers for inline plus buttons
+    document.querySelectorAll('.add-row-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            addNewRow(this);
+            return false;
+        });
+    });
+
+    // Add input event listeners for quantity fields to auto-calculate totals
+    setupQuantityListeners();
+    
+    // Add change listeners to part selects to fetch prices
+    setupPartSelectListeners();
+});
+
+// Function to initialize part selectors with Select2
+function initializePurchasePartSelectors() {
+    console.log('Initializing Select2 for part selectors');
+    $('select[name*="-part"]').not('.select2-hidden-accessible').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'Type Part Number or Name to search',
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No parts found - try a different search term";
+            }
+        }
+    });
+}
+
+// Add input event listeners to quantity fields to auto-calculate totals
+function setupQuantityListeners() {
+    document.querySelectorAll('input[name*="-quantity"]').forEach(input => {
+        input.addEventListener('input', function() {
+            updateRowTotal(this.closest('tr'));
+        });
+    });
+}
+
+// Update the total price for a row based on quantity and unit price
+function updateRowTotal(row) {
+    const quantityInput = row.querySelector('input[name*="-quantity"]');
+    const unitPriceInput = row.querySelector('input[name*="-unit_price"]');
+    const totalPriceInput = row.querySelector('input[name*="-total_price"]');
+    
+    if (quantityInput && unitPriceInput && totalPriceInput) {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const unitPrice = parseFloat(unitPriceInput.value) || 0;
+        totalPriceInput.value = (quantity * unitPrice).toFixed(2);
+    }
+}
+
+// Add change listeners to part select dropdowns to fetch prices
+function setupPartSelectListeners() {
+    document.querySelectorAll('select[name*="-part"]').forEach(select => {
+        select.addEventListener('change', function() {
+            const partId = this.value;
+            const row = this.closest('tr');
+            const unitPriceInput = row.querySelector('input[name*="-unit_price"]');
+            
+            if (partId && unitPriceInput) {
+                fetchPartDetails(partId, unitPriceInput);
+            }
+        });
+    });
+}
+
+// Function to fetch part details and auto-populate unit price
+function fetchPartDetails(partId, unitPriceInput) {
+    if (!partId) {
+        // If no part is selected, clear the unit price
+        unitPriceInput.value = '';
+        return;
+    }
+    
+    // Fetch part details from the API
+    fetch(`/inventory/api/parts/${partId}/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Set the unit price from the response
+            unitPriceInput.value = data.unit_price;
+            console.log(`Auto-populated unit price: ${data.unit_price} for part ID: ${partId}`);
+            
+            // Update the total price
+            updateRowTotal(unitPriceInput.closest('tr'));
+        })
+        .catch(error => {
+            console.error('Error fetching part details:', error);
+        });
+}
+
+// Function to add a new row when clicking the inline plus button
+function addNewRow(button) {
+    console.log('addNewRow called for button:', button);
+    const currentRow = button.closest('tr');
+    const tbody = currentRow.parentElement;
+    const newRow = currentRow.cloneNode(true);
+    
+    // Clean up any Select2 instances
+    newRow.querySelectorAll('select').forEach(select => {
+        const selectId = select.id;
+        if (selectId) {
+            // Destroy any existing Select2 for this element
+            try {
+                $('#' + selectId).select2('destroy');
+            } catch (e) {
+                console.log('Select2 not initialized for', selectId);
+            }
+        }
+    });
+    
+    // Clear the input values in the new row
+    newRow.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+            input.value = '';
+        }
+    });
+    
+    // Clear select values - need to do this differently for Select2
+    newRow.querySelectorAll('select').forEach(select => {
+        // Reset to default option
+        select.selectedIndex = 0;
+        // Remove any Select2 containers and data
+        $(select).siblings('.select2-container').remove();
+    });
+    
+    // Update the form indices
+    // Find the form count field by looking for any input containing "TOTAL_FORMS" in the name
+    const totalForms = document.querySelector('input[name*="TOTAL_FORMS"]');
+    if (!totalForms) {
+        console.error('Could not find TOTAL_FORMS input');
+        return false;
+    }
+    const currentIndex = parseInt(totalForms.value);
+    console.log('Current TOTAL_FORMS value:', currentIndex);
+    totalForms.value = currentIndex + 1;
+    console.log('Updated TOTAL_FORMS to:', totalForms.value);
+    
+    // Update the form IDs and names in the new row
+    newRow.querySelectorAll('input, select, textarea').forEach(element => {
+        const name = element.getAttribute('name');
+        if (name) {
+            // For names like "purchaseitem_set-0-store"
+            if (name.includes('-')) {
+                const parts = name.split('-');
+                if (parts.length >= 2) {
+                    const prefix = parts[0];
+                    parts[1] = currentIndex.toString();
+                    const newName = parts.join('-');
+                    element.setAttribute('name', newName);
+                    console.log('Updated name from', name, 'to', newName);
+                }
+            }
+            
+            if (element.id) {
+                const id = element.getAttribute('id');
+                if (id.includes('-')) {
+                    const parts = id.split('-');
+                    if (parts.length >= 2) {
+                        parts[1] = currentIndex.toString();
+                        const newId = parts.join('-');
+                        element.setAttribute('id', newId);
+                        console.log('Updated id from', id, 'to', newId);
+                    }
+                }
+            }
+        }
+    });
+    
+    // Add the new row after the current row
+    tbody.insertBefore(newRow, currentRow.nextSibling);
+    
+    // Clear any error messages in the new row
+    newRow.querySelectorAll('.text-danger').forEach(error => {
+        error.remove();
+    });
+    
+    // Re-initialize Select2 for the new row
+    setTimeout(function() {
+        initializePurchasePartSelectors();
+        setupPartSelectListeners();
+        setupQuantityListeners();
+    }, 50);
+    
+    console.log('New row added successfully');
+    return false; // Prevent default button behavior
+}
+
+// Function to remove an item row
+function removeItemRow(button) {
+    const row = button.closest('tr');
+    
+    // Check if there's a DELETE checkbox (for existing items)
+    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+    if (deleteCheckbox) {
+        // If checkbox exists (for existing items), mark it for deletion
+        deleteCheckbox.checked = true;
+        // Hide the row
+        row.style.display = 'none';
+    } else {
+        // If there's no DELETE checkbox (for new items), just remove it from the DOM
+        row.remove();
+    }
+    
+    return false; // Prevent default
+}
+</script>
+{% endblock %}

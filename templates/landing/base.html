@@ -1,0 +1,493 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ScootDr - Scooter Sales, Rentals, and Service{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #FFFFFF; /* White */
+            --secondary-color: #F8F9FA; /* Light white */
+            --dark-color: #2C3E50; /* Dark text */
+            --light-color: #FAFAFA; /* Snow White */
+            --accent-color: #007bff33; /* Light blue accent */
+            --nav-hover: #F1F3F4; /* Light gray hover */
+            --text-color: #000000; /* Black text */
+        }
+        
+        /* Apply Tech & Trust theme */
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .bg-secondary {
+            background-color: var(--secondary-color) !important;
+        }
+        
+        .bg-dark {
+            background-color: var(--dark-color) !important;
+        }
+        
+        .bg-light {
+            background-color: var(--light-color) !important;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+            color: white !important;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0b5ed7 !important;
+            border-color: #0a58ca !important;
+            color: white !important;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: var(--light-color);
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .text-secondary {
+            color: var(--secondary-color) !important;
+        }
+        
+        .text-accent {
+            color: var(--accent-color) !important;
+        }
+        
+        .border-primary {
+            border-color: var(--primary-color) !important;
+        }
+        
+        /* Color-changing navbar toggle button with smooth transitions */
+        .navbar-toggler {
+            padding: 0.25rem 0.75rem !important;
+            border-radius: 0.375rem !important;
+            border: 2px solid !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            background: linear-gradient(45deg, #0d6efd, #6610f2, #d63384, #dc3545, #fd7e14, #ffc107, #198754, #20c997) !important;
+            background-size: 400% 400% !important;
+            animation: colorWave 3s ease-in-out infinite !important;
+            border-color: transparent !important;
+            box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3) !important;
+        }
+        
+        .navbar-toggler:hover {
+            transform: scale(1.1) !important;
+            animation-duration: 1s !important;
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5) !important;
+        }
+        
+        .navbar-toggler:active {
+            transform: scale(0.95) !important;
+            transition: transform 0.1s !important;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+        }
+        
+        @keyframes colorWave {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Additional pulse effect on click */
+        .navbar-toggler.clicked {
+            animation: pulseColors 0.6s ease-out !important;
+        }
+        
+        @keyframes pulseColors {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            }
+            50% {
+                transform: scale(1.15);
+                box-shadow: 0 8px 25px rgba(220, 53, 69, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+            }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 60px; /* For fixed navbar */
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        /* Enhanced Navigation Styling */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            padding: 0.75rem 1rem !important;
+            margin: 0 0.25rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--text-color) !important;
+            background-color: var(--nav-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-nav .nav-link.active {
+            color: var(--text-color) !important;
+            background-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar-nav .nav-link:hover::before {
+            width: 80%;
+        }
+
+        .btn-outline-light {
+            border-color: var(--text-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-light:hover {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Parallax background with Vespa scooters */
+        .parallax-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('/static/images/products/vespa-primavera.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            background-color: rgba(250, 250, 250, 0.85);
+        }
+        
+        .hero-section {
+            background: #FBF8F1; /* Cream background color */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* This creates the parallax effect */
+            color: black; /* Changed to black text */
+            padding: 5rem 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 2rem 0;
+        }
+        
+        .footer a {
+            color: #adb5bd;
+        }
+        
+        .footer a:hover {
+            color: white;
+            text-decoration: none;
+        }
+
+        .call-to-action {
+            background-color: var(--accent-color);
+            padding: 3rem 0;
+        }
+
+        .service-item {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 1.5rem;
+            height: 100%;
+        }
+
+        /* Custom styles for product cards */
+        .product-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        /* Custom styles for contact page */
+        .contact-info i {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+            color: var(--primary-color);
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Parallax Vespa Scooter Background -->
+    <div class="parallax-background"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #F5F5DC;">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'landing:home' %}">
+                <img src="{% static 'images/scootdr_logo_2.png' %}" alt="ScootDr Logo" height="40" class="d-inline-block align-text-top">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" id="navbarToggler">
+                <span class="navbar-toggler-icon" style="background-image: url('data:image/svg+xml;charset=utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 30 30\'><path stroke=\'rgba(255,255,255,1)\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-miterlimit=\'10\' d=\'M4 7h22M4 15h22M4 23h22\'/></svg>') !important;"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == home_url %}active{% endif %}" href="{% url 'landing:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'products' in request.path %}active{% endif %}" href="{% url 'landing:products' %}">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'buy' in request.path %}active{% endif %}" href="{% url 'landing:buy' %}">Buy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'rent' in request.path %}active{% endif %}" href="{% url 'landing:rent' %}">Rent</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'restore' in request.path %}active{% endif %}" href="{% url 'landing:restore' %}">Restore</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'service' in request.path %}active{% endif %}" href="{% url 'landing:service' %}">Service</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'contact' in request.path %}active{% endif %}" href="{% url 'landing:contact' %}">Contact</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart:cart_detail' %}" style="display: flex; align-items: center; padding-top: 0.75rem; padding-bottom: 0.75rem;">
+                            <div style="position: relative; display: inline-block; margin-top: 4px;">
+                                <span class="badge bg-danger cart-count" style="position: absolute; top: -8px; right: -8px; font-size: 0.7em; padding: 0.25em 0.5em; border-radius: 50%;">
+                                    {% with total_items=request.session.cart|default:0 %}
+                                        {% if total_items %}
+                                            {{ total_items|length }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    {% endwith %}
+                                </span>
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'landing:account' %}"><i class="fas fa-user me-1"></i> My Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-tachometer-alt me-1"></i> Staff Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <div class="content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>ScootDr</h5>
+                    <p>Your one-stop solution for scooter sales, rentals, restoration, and service.</p>
+                    <div class="social-icons">
+                        <a href="#" class="me-2"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="me-2"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'landing:home' %}">Home</a></li>
+                        <li><a href="{% url 'landing:products' %}">Products</a></li>
+                        <li><a href="{% url 'landing:rent' %}">Rentals</a></li>
+                        <li><a href="{% url 'landing:service' %}">Service</a></li>
+                        <li><a href="{% url 'landing:contact' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Information</h5>
+                    <address>
+                        <p><i class="fas fa-map-marker-alt"></i> Castle Mews, 16 Newmarket Street, Foreshore, Cape Town, 8001, South Africa</p>
+                        <p><i class="fas fa-phone"></i> (0) 21-418 5995</p>
+                        <p><i class="fas fa-envelope"></i> enquiries@scootdr.co.za</p>
+                    </address>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; {% now "Y" %} ScootDr. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (for additional functionality if needed) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Color-changing navbar toggle button script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbarToggler = document.getElementById('navbarToggler');
+            
+            if (navbarToggler) {
+                // Add click animation effect
+                navbarToggler.addEventListener('click', function() {
+                    this.classList.add('clicked');
+                    
+                    // Remove the clicked class after animation completes
+                    setTimeout(() => {
+                        this.classList.remove('clicked');
+                    }, 600);
+                });
+                
+                // Add random color burst effect on double click
+                navbarToggler.addEventListener('dblclick', function() {
+                    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    this.style.setProperty('background', `radial-gradient(circle, ${randomColor}, #0d6efd)`, 'important');
+                    
+                    // Reset to gradient after 1 second
+                    setTimeout(() => {
+                        this.style.removeProperty('background');
+                    }, 1000);
+                });
+            }
+        });
+    </script>
+    
+    <!-- Parallax Scrolling Effect JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get parallax background element
+            const parallaxBg = document.querySelector('.parallax-background');
+            
+            // Handle scroll events for parallax effect
+            window.addEventListener('scroll', function() {
+                // Calculate scroll position
+                const scrollPosition = window.pageYOffset;
+                
+                // Move the background at a different speed than the scroll
+                if (parallaxBg) {
+                    parallaxBg.style.transform = 'translateY(' + (scrollPosition * 0.4) + 'px)';
+                }
+                
+                // Get all elements with parallax-section class (for additional elements)
+                const parallaxSections = document.querySelectorAll('.hero-section');
+                
+                // Apply parallax effect to each section
+                parallaxSections.forEach(function(section) {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    
+                    // Check if section is in viewport
+                    if (scrollPosition > sectionTop - window.innerHeight && 
+                        scrollPosition < sectionTop + sectionHeight) {
+                        // Calculate parallax offset
+                        const offset = (scrollPosition - sectionTop) * 0.5;
+                        
+                        // Apply transform to create parallax effect
+                        section.style.backgroundPositionY = '-' + offset + 'px';
+                    }
+                });
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Purchase Quote{% endblock %}
+
+{% block extra_css %}
+<style>
+    .selected-item {
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+    .store-filter {
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Create Purchase Order</h1>
+        <div>
+            <button id="exportBtn" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Export to Excel
+            </button>
+            <a href="{% url 'inventory:purchase_list' %}" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Back to Purchases
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Store Selection and Date -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Quote Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="storeSelect"><strong>Select Store:</strong></label>
+                                <select id="storeSelect" class="form-select">
+                                    <option value="">-- All Stores --</option>
+                                    {% for store in stores %}
+                                    <option value="{{ store.id }}">{{ store.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="quoteDate"><strong>Order Date:</strong></label>
+                                <input type="date" id="quoteDate" class="form-control" value="{{ today|date:'Y-m-d' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="quoteRef"><strong>Reference #:</strong></label>
+                                <input type="text" id="quoteRef" class="form-control" value="PO-{{ quote_number }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parts Selection -->
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Select Items for Purchase</h5>
+                    <div class="d-flex">
+                        <input type="text" id="searchInput" class="form-control form-control-sm me-2" placeholder="Search items...">
+                        <span class="badge bg-info" id="selectedCount">0 items selected</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="partsTable">
+                            <thead>
+                                <tr>
+                                    <th width="5%">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="selectAll">
+                                        </div>
+                                    </th>
+                                    <th width="20%">Part No.</th>
+                                    <th width="45%">Item Name</th>
+                                    <th width="15%">Category</th>
+                                    <th width="15%">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for part in parts %}
+                                <tr data-part-id="{{ part.id }}" data-store-id="{{ part.store.id|default:'' }}" class="part-row">
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input part-checkbox" type="checkbox" value="{{ part.id }}">
+                                        </div>
+                                    </td>
+                                    <td>{{ part.part_number }}</td>
+                                    <td>{{ part.name }}</td>
+                                    <td>{{ part.category }}</td>
+                                    <td>
+                                        <input type="number" class="form-control quantity-input" value="1" min="1" data-part-id="{{ part.id }}">
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No parts available.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const storeSelect = document.getElementById('storeSelect');
+        const searchInput = document.getElementById('searchInput');
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const partRows = document.querySelectorAll('.part-row');
+        const selectedCountElement = document.getElementById('selectedCount');
+        const exportBtn = document.getElementById('exportBtn');
+        
+        // Update selected count
+        function updateSelectedCount() {
+            const selectedCount = document.querySelectorAll('.part-checkbox:checked').length;
+            selectedCountElement.textContent = `${selectedCount} item${selectedCount !== 1 ? 's' : ''} selected`;
+        }
+        
+        // Filter parts by store
+        storeSelect.addEventListener('change', function() {
+            const selectedStoreId = this.value;
+            
+            partRows.forEach(row => {
+                const rowStoreId = row.getAttribute('data-store-id');
+                
+                if (!selectedStoreId || rowStoreId === selectedStoreId) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                    // Uncheck hidden rows
+                    const checkbox = row.querySelector('.part-checkbox');
+                    if (checkbox.checked) {
+                        checkbox.checked = false;
+                    }
+                }
+            });
+            
+            updateSelectedCount();
+            selectAllCheckbox.checked = false;
+        });
+        
+        // Handle search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            partRows.forEach(row => {
+                const partName = row.children[2].textContent.toLowerCase();
+                const partNumber = row.children[1].textContent.toLowerCase();
+                const isVisible = row.style.display !== 'none';
+                
+                if (isVisible && (partName.includes(searchTerm) || partNumber.includes(searchTerm))) {
+                    row.style.display = '';
+                } else if (isVisible) {
+                    row.style.display = 'none';
+                    // Uncheck hidden rows
+                    const checkbox = row.querySelector('.part-checkbox');
+                    if (checkbox.checked) {
+                        checkbox.checked = false;
+                    }
+                }
+            });
+            
+            updateSelectedCount();
+            selectAllCheckbox.checked = false;
+        });
+        
+        // Select all functionality
+        selectAllCheckbox.addEventListener('change', function() {
+            const visibleRows = Array.from(partRows).filter(row => row.style.display !== 'none');
+            
+            visibleRows.forEach(row => {
+                const checkbox = row.querySelector('.part-checkbox');
+                checkbox.checked = this.checked;
+                
+                if (this.checked) {
+                    row.classList.add('selected-item');
+                } else {
+                    row.classList.remove('selected-item');
+                }
+            });
+            
+            updateSelectedCount();
+        });
+        
+        // Individual checkbox functionality
+        document.querySelectorAll('.part-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const row = this.closest('tr');
+                
+                if (this.checked) {
+                    row.classList.add('selected-item');
+                } else {
+                    row.classList.remove('selected-item');
+                }
+                
+                updateSelectedCount();
+                
+                // Update "Select All" checkbox state
+                const visibleCheckboxes = document.querySelectorAll('.part-row:not([style*="display: none"]) .part-checkbox');
+                const checkedVisibleCheckboxes = document.querySelectorAll('.part-row:not([style*="display: none"]) .part-checkbox:checked');
+                
+                selectAllCheckbox.checked = visibleCheckboxes.length === checkedVisibleCheckboxes.length && visibleCheckboxes.length > 0;
+            });
+        });
+        
+        // Export to Excel functionality
+        exportBtn.addEventListener('click', function() {
+            const selectedItems = [];
+            const checkedBoxes = document.querySelectorAll('.part-checkbox:checked');
+            
+            if (checkedBoxes.length === 0) {
+                alert('Please select at least one item for the quote.');
+                return;
+            }
+            
+            checkedBoxes.forEach(checkbox => {
+                const partId = checkbox.value;
+                const row = checkbox.closest('tr');
+                const quantityInput = row.querySelector('.quantity-input');
+                const quantity = parseInt(quantityInput.value, 10);
+                
+                selectedItems.push({
+                    id: partId,
+                    quantity: quantity || 1 // Default to 1 if no value or invalid
+                });
+            });
+            
+            const storeId = storeSelect.value;
+            const quoteDate = document.getElementById('quoteDate').value;
+            const quoteRef = document.getElementById('quoteRef').value;
+            
+            // Create form and submit
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "inventory:export_purchase_quote" %}';
+            
+            // Add CSRF token
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';
+            form.appendChild(csrfToken);
+            
+            // Add selected parts with quantities
+            const itemsInput = document.createElement('input');
+            itemsInput.type = 'hidden';
+            itemsInput.name = 'items';
+            itemsInput.value = JSON.stringify(selectedItems);
+            form.appendChild(itemsInput);
+            
+            // Add store ID
+            const storeInput = document.createElement('input');
+            storeInput.type = 'hidden';
+            storeInput.name = 'store_id';
+            storeInput.value = storeId;
+            form.appendChild(storeInput);
+            
+            // Add quote date
+            const dateInput = document.createElement('input');
+            dateInput.type = 'hidden';
+            dateInput.name = 'quote_date';
+            dateInput.value = quoteDate;
+            form.appendChild(dateInput);
+            
+            // Add quote reference
+            const refInput = document.createElement('input');
+            refInput.type = 'hidden';
+            refInput.name = 'quote_ref';
+            refInput.value = quoteRef;
+            form.appendChild(refInput);
+            
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}ScootDr - Your Scooter Specialists{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-4">Welcome to ScootDr</h1>
+        <p class="lead mb-5">Your one-stop solution for scooter sales, rentals, restoration, and service</p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            <a href="{% url 'landing:buy' %}" class="btn btn-primary btn-lg">Shop Now</a>
+            <a href="{% url 'landing:service' %}" class="btn btn-primary btn-lg">Book a Service</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold">Why Choose ScootDr?</h2>
+                <p class="lead">We offer comprehensive scooter solutions to meet all your needs</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <h4>Buy New Scooters</h4>
+                        <p>Browse our wide selection of high-quality scooters from top brands at competitive prices.</p>
+                        <a href="{% url 'landing:buy' %}" class="btn btn-sm btn-outline-primary mt-2">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-motorcycle"></i>
+                        </div>
+                        <h4>Rent a Scooter</h4>
+                        <p>Rent a scooter for a day, week, or month with flexible options to suit your needs.</p>
+                        <a href="{% url 'landing:rent' %}" class="btn btn-sm btn-outline-primary mt-2">View Rentals</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h4>Expert Service</h4>
+                        <p>Our certified technicians provide top-notch maintenance and repair services.</p>
+                        <a href="{% url 'landing:service' %}" class="btn btn-sm btn-outline-primary mt-2">Book Service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h4>Scooter Restoration</h4>
+                        <p>Bring your old scooter back to life with our professional restoration services.</p>
+                        <a href="{% url 'landing:restore' %}" class="btn btn-sm btn-outline-primary mt-2">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Featured Products</h2>
+        <div class="row justify-content-center">
+            {% for product in featured_products %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ product.image }}" alt="{{ product.name }}" class="card-img-top product-card">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted flex-grow-1">{{ product.description|truncatechars:80 }}</p>
+                        <p class="fw-bold">R{{ product.price }}</p>
+                        <a href="{% url 'landing:product_detail' product.id %}" class="btn btn-primary mt-auto">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <p>Featured products coming soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'landing:products' %}" class="btn btn-outline-primary">View All Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">What Our Customers Say</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="card text-center p-4 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <p class="lead mb-4">"I purchased my first scooter from ScootDr and the experience was fantastic. The staff was knowledgeable and helped me find the perfect model for my needs."</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="text-center">
+                                            <h5 class="mb-0">John D.</h5>
+                                            <p class="text-muted">Satisfied Customer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="card text-center p-4 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <p class="lead mb-4">"The restoration team at ScootDr brought my vintage scooter back to life. It looks and runs like new! Highly recommended for anyone looking to restore their beloved scooter."</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="text-center">
+                                            <h5 class="mb-0">Sarah M.</h5>
+                                            <p class="text-muted">Restoration Customer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="card text-center p-4 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <p class="lead mb-4">"I regularly use their service department for maintenance. Fast, reliable, and always deliver quality work. The technicians are skilled and take great care of my scooter."</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="text-center">
+                                            <h5 class="mb-0">Michael T.</h5>
+                                            <p class="text-muted">Service Customer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    <div class="carousel-indicators position-relative mt-4">
+                        <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active bg-primary" aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" class="bg-primary" aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2" class="bg-primary" aria-label="Slide 3"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="call-to-action">
+    <div class="container text-center">
+        <h2 class="mb-3">Ready to Start Your Scooter Journey?</h2>
+        <p class="lead mb-4">Contact us today to learn more about our products and services</p>
+        <a href="{% url 'landing:contact' %}" class="btn btn-primary btn-lg">Get in Touch</a>
+    </div>
+</section>
+{% endblock %}

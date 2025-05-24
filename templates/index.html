@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Scooter Rental System - Home{% endblock %}
+
+{% block content %}
+<section class="hero mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4 mb-4">Welcome to Scooter Rental</h1>
+            <p class="lead">Experience the freedom of the road with our premium scooter rentals. We offer a wide range of scooters for all your needs.</p>
+            {% if 'user_id' not in session %}
+                <div class="mt-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary me-2">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">Login</a>
+                </div>
+            {% else %}
+                <div class="mt-4">
+                    <a href="{{ url_for('rentals') }}" class="btn btn-primary">Rent a Scooter Now</a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-center">
+            <svg width="500" height="300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                <path fill="#0d6efd" d="M280 32c0-8.8-7.2-16-16-16s-16 7.2-16 16V64c0 8.8 7.2 16 16 16s16-7.2 16-16V32zm-67.8 62.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0l-32 32c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l32-32zm135.6-22.6c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l32 32c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6l-32-32zM48 224H64V416c0 17.7 14.3 32 32 32H320c17.7 0 32-14.3 32-32V224h16c13.3 0 24-10.7 24-24s-10.7-24-24-24H304 256 192 144 96 48c-13.3 0-24 10.7-24 24s10.7 24 24 24zm208-96c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32zm30.6 174.6c24 24 24 64 0 88s-64 24-88 0s-24-64 0-88s64-24 88 0zM55.4 302.6c24-24 64-24 88 0s24 64 0 88s-64 24-88 0s-24-64 0-88z"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="text-center mb-4">Our Scooter Categories</h2>
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Category A</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Sym Orbit 125cc</h6>
+                    <p class="card-text">Perfect for city commutes with excellent fuel efficiency.</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item">1 day: R400</li>
+                        <li class="list-group-item">2-10 Days: R300/day</li>
+                        <li class="list-group-item">11-29 days: R225/day</li>
+                        <li class="list-group-item">30+ days: R120/day</li>
+                    </ul>
+                    <a href="{{ url_for('rentals') }}" class="btn btn-primary">Rent Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Category B</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Jet 14 200cc</h6>
+                    <p class="card-text">More power for a smoother ride on longer journeys.</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item">1 day: R450</li>
+                        <li class="list-group-item">2-10 Days: R350/day</li>
+                        <li class="list-group-item">11-29 days: R255/day</li>
+                        <li class="list-group-item">30+ days: R150/day</li>
+                    </ul>
+                    <a href="{{ url_for('rentals') }}" class="btn btn-primary">Rent Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Category C</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Citycom 300cc</h6>
+                    <p class="card-text">Premium power and comfort for all types of journeys.</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item">1 day: R550</li>
+                        <li class="list-group-item">2-10 Days: R500/day</li>
+                        <li class="list-group-item">11-29 days: R350/day</li>
+                        <li class="list-group-item">30+ days: R250/day</li>
+                    </ul>
+                    <a href="{{ url_for('rentals') }}" class="btn btn-primary">Rent Now</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Category D</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Vespa 150 or 300cc</h6>
+                    <p class="card-text">Classic style with modern performance. Turn heads wherever you go.</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item">1 day: R850</li>
+                        <li class="list-group-item">2-10 Days: R600/day</li>
+                        <li class="list-group-item">11-29 days: R400/day</li>
+                        <li class="list-group-item">30+ days: R250/day</li>
+                    </ul>
+                    <a href="{{ url_for('rentals') }}" class="btn btn-primary">Rent Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="text-center mb-4">Why Choose Us</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <svg class="feather feather-check-circle mb-3" width="48" height="48">
+                        <use xlink:href="feather-sprite.svg#check-circle"/>
+                    </svg>
+                    <h5 class="card-title">Quality Scooters</h5>
+                    <p class="card-text">All our scooters are regularly maintained and in excellent condition.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <svg class="feather feather-dollar-sign mb-3" width="48" height="48">
+                        <use xlink:href="feather-sprite.svg#dollar-sign"/>
+                    </svg>
+                    <h5 class="card-title">Competitive Pricing</h5>
+                    <p class="card-text">We offer the best rates with discounts for longer rental periods.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <svg class="feather feather-thumbs-up mb-3" width="48" height="48">
+                        <use xlink:href="feather-sprite.svg#thumbs-up"/>
+                    </svg>
+                    <h5 class="card-title">Easy Process</h5>
+                    <p class="card-text">Simple booking process with no hidden fees or complicated paperwork.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

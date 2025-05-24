@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Card #{{ job_card.job_card_number }}{% endblock %}
+
+{% block page_title %}Job Card Details{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group" role="group">
+    <a href="{% url 'service:job_card_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Job Cards
+    </a>
+    <a href="{% url 'service:job_card_update' pk=job_card.pk %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edit Job Card
+    </a>
+    <a href="{% url 'service:checklist_update' pk=job_card.pk %}" class="btn btn-info">
+        <i class="fas fa-tasks"></i> Update Checklist
+    </a>
+    <div class="btn-group">
+        <button onclick="window.print();" class="btn btn-primary">
+            <i class="fas fa-print"></i> Quick Print
+        </button>
+        <a href="{% url 'service:job_card_detail' pk=job_card.pk %}?print=true" class="btn btn-success">
+            <i class="fas fa-file-alt"></i> Format Print
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add print header and footer for job card
+        const printSection = document.createElement('div');
+        printSection.classList.add('d-none', 'print-footer');
+        printSection.innerHTML = `
+            <p>Job Card #${document.title.split('#')[1]} | Printed on ${new Date().toLocaleDateString()}</p>
+            <p>Scooter Rental Management System</p>
+        `;
+        document.body.appendChild(printSection);
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Job Card Info -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Job Card Information</h5>
+                <div>
+                    <span class="badge bg-{% if job_card.status == 'completed' %}success{% elif job_card.status == 'in_progress' %}primary{% elif job_card.status == 'pending' %}warning{% elif job_card.status == 'on_hold' %}info{% else %}secondary{% endif %} me-2">
+                        {{ job_card.get_status_display }}
+                    </span>
+                    <span class="badge bg-{% if job_card.priority == 'urgent' %}danger{% elif job_card.priority == 'high' %}warning{% elif job_card.priority == 'medium' %}info{% else %}secondary{% endif %}">
+                        {{ job_card.get_priority_display }} Priority
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Job Card Number:</strong> {{ job_card.job_card_number }}</p>
+                        <p><strong>Created:</strong> {{ job_card.date_created|date:"F d, Y H:i" }}</p>
+                        <p><strong>Last Updated:</strong> {{ job_card.date_updated|date:"F d, Y H:i" }}</p>
+                        <p><strong>Technician:</strong> {{ job_card.technician.get_full_name|default:job_card.technician.username }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Estimated Completion:</strong> {{ job_card.estimated_completion|date:"F d, Y"|default:"Not specified" }}</p>
+                        <p><strong>Actual Completion:</strong> {{ job_card.actual_completion|date:"F d, Y"|default:"Not completed" }}</p>
+                        <p><strong>Labor Hours:</strong> {{ job_card.labor_hours }} hours</p>
+                        <p><strong>Labor Rate:</strong> R{{ job_card.labor_rate }}/hour</p>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <h6>Description</h6>
+                    <p>{{ job_card.description }}</p>
+                </div>
+                
+                {% if job_card.notes %}
+                <div class="mb-3">
+                    <h6>Additional Notes</h6>
+                    <p>{{ job_card.notes }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Scooter Info -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Scooter Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>VIN/Serial:</strong> {{ job_card.scooter.vin }}</p>
+                        <p><strong>Make/Model:</strong> {{ job_card.scooter.make }} {{ job_card.scooter.model }}</p>
+                        <p><strong>Year:</strong> {{ job_card.scooter.year }}</p>
+                        <p><strong>Color:</strong> {{ job_card.scooter.color }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Current Status:</strong> {{ job_card.scooter.get_status_display }}</p>
+                        <p><strong>Current Mileage:</strong> {{ job_card.mileage }} miles</p>
+                        <p><strong>Store Location:</strong> {{ job_card.scooter.store.name }}</p>
+                        <p><strong>Last Maintenance:</strong> {{ job_card.scooter.last_maintenance|date:"F d, Y"|default:"No previous maintenance" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Parts Used -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Parts Used</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Part Number</th>
+                                <th>Name</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if parts_used %}
+                                {% for part_item in parts_used %}
+                                    <tr>
+                                        <td>{{ part_item.part.part_number }}</td>
+                                        <td>{{ part_item.part.name }}</td>
+                                        <td>{{ part_item.quantity }}</td>
+                                        <td>R{{ part_item.unit_price }}</td>
+                                        <td>R{{ part_item.total_price }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No parts used for this job</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Cost Summary -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Cost Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Parts Cost:</span>
+                    <span>R{{ parts_cost }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Labor Cost:</span>
+                    <span>R{{ labor_cost }}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total Cost:</span>
+                    <span>R{{ total_cost }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Checklist -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Service Checklist</h5>
+                <a href="{% url 'service:add_checklist_item' pk=job_card.pk %}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus"></i> Add Item
+                </a>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% if checklist_items %}
+                        {% for item in checklist_items %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas {% if item.is_checked %}fa-check-circle text-success{% else %}fa-circle text-secondary{% endif %} me-2"></i>
+                                    {{ item.item_name }}
+                                    {% if item.notes %}
+                                        <small class="d-block text-muted">{{ item.notes }}</small>
+                                    {% endif %}
+                                </div>
+                                <span class="badge bg-primary rounded-pill">{{ forloop.counter }}</span>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item text-center">No checklist items found</li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="card-footer text-center">
+                <a href="{% url 'service:checklist_update' pk=job_card.pk %}" class="btn btn-info">
+                    <i class="fas fa-tasks"></i> Update Checklist
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

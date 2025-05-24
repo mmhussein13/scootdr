@@ -1,0 +1,209 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}Contact Us - ScootDr{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="mb-5">Contact Us</h1>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="mb-4">Get in Touch</h2>
+                        <p>We're here to help with your scooter needs. Fill out the form below, and a member of our team will get back to you as soon as possible.</p>
+                        
+                        <form>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone">
+                            </div>
+                            <div class="mb-3">
+                                <label for="subject" class="form-label">Subject</label>
+                                <select class="form-select" id="subject" required>
+                                    <option value="">Select a subject</option>
+                                    <option value="sales">Sales Inquiry</option>
+                                    <option value="service">Service Appointment</option>
+                                    <option value="parts">Parts and Accessories</option>
+                                    <option value="rental">Rental Information</option>
+                                    <option value="restoration">Restoration Services</option>
+                                    <option value="support">General Support</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="mb-4">Contact Information</h2>
+                        <div class="contact-info mb-4">
+                            <p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong><br>
+                            Castle Mews, 16 Newmarket Street<br>
+                            Foreshore, Cape Town, 8001, South Africa</p>
+                            
+                            <p><i class="fas fa-phone"></i> <strong>Phone:</strong><br>
+                            +27 (0) 83 414 6823</p>
+                            
+                            <p><i class="fas fa-envelope"></i> <strong>Email:</strong><br>
+                            enquiries@scootdr.co.za</p>
+                            
+                            <p><i class="fas fa-clock"></i> <strong>Business Hours:</strong><br>
+                            Monday - Friday: 7:30 AM - 4:00 PM<br>
+                            Saturday: Closed<br>
+                            Sunday: Closed</p>
+                        </div>
+                        
+                        <h5 class="mb-3">Follow Us</h5>
+                        <div class="social-icons mb-4">
+                            <a href="#" class="me-2 text-decoration-none"><i class="fab fa-facebook fa-2x"></i></a>
+                            <a href="#" class="me-2 text-decoration-none"><i class="fab fa-twitter fa-2x"></i></a>
+                            <a href="#" class="me-2 text-decoration-none"><i class="fab fa-instagram fa-2x"></i></a>
+                            <a href="#" class="me-2 text-decoration-none"><i class="fab fa-youtube fa-2x"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Map -->
+                <div class="card">
+                    <div class="card-body p-0">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3307.5641420241196!2d18.4233156!3d-33.9106826!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDU0JzM4LjUiUyAxOMKwMjUnMjYuMSJF!5e0!3m2!1sen!2sza!4v1558531591683!5m2!1sen!2sza" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Department Contacts -->
+        <div class="card mt-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Department Contacts</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-shopping-cart text-primary me-2"></i> Sales Department</h4>
+                        <p>For inquiries about new and used scooters, pricing, and available models. Ask for Pete Milne</p>
+                        <p><strong>Email:</strong> enquiries@scootdr.co.za<br>
+                        <strong>Phone:</strong> +27 (0) 83 414 6823</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-tools text-primary me-2"></i> Service Department</h4>
+                        <p>For scheduling maintenance, repairs, and technical assistance. Ask for Pete Milne</p>
+                        <p><strong>Email:</strong> enquiries@scootdr.co.za<br>
+                        <strong>Phone:</strong> +27 (0) 83 414 6823</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-cogs text-primary me-2"></i> Parts & Accessories</h4>
+                        <p>For ordering parts, accessories, and merchandise. Ask for Samantha</p>
+                        <p><strong>Email:</strong> enquiries@scootdr.co.za<br>
+                        <strong>Phone:</strong> +27 (0) 71 575 5425</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-motorcycle text-primary me-2"></i> Rental Department</h4>
+                        <p>For scooter rental inquiries, bookings, and availability. Ask for Pete Milne</p>
+                        <p><strong>Email:</strong> enquiries@scootdr.co.za<br>
+                        <strong>Phone:</strong> +27 (0) 83 414 6823</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-sync-alt text-primary me-2"></i> Restoration Services</h4>
+                        <p>For vintage scooter restoration projects and consultations.</p>
+                        <p><strong>Email:</strong> enquiries@scootdr.co.za<br>
+                        <strong>Phone:</strong> +27 (0) 83 414 6823</p>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <h4><i class="fas fa-headset text-primary me-2"></i> Customer Support</h4>
+                        <p>For general inquiries, feedback, and assistance.</p>
+                        <p><strong>Email:</strong> enquiries@scootdr.co.za<br>
+                        <strong>Phone:</strong> +27 (0) 83 414 6823</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ Section -->
+        <div class="card mt-5">
+            <div class="card-header bg-light">
+                <h3 class="mb-0">Frequently Asked Questions</h3>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="contactFaq">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                What are your business hours?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#contactFaq">
+                            <div class="accordion-body">
+                                Our regular business hours are Monday to Friday from 8:00 AM to 5:30 PM, and Saturday from 9:00 AM to 3:00 PM. We are closed on Sundays and public holidays.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Do I need an appointment for service or can I walk in?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#contactFaq">
+                            <div class="accordion-body">
+                                We recommend scheduling an appointment for service to ensure we can accommodate you promptly. However, we do accept walk-ins subject to availability. For quickest service, please book an appointment through our online form or by calling our service department.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Do you offer pickup and delivery services?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#contactFaq">
+                            <div class="accordion-body">
+                                Yes, we offer pickup and delivery services for scooters needing service or repair. This service is available within a 20km radius of our location for an additional fee. Please contact our service department to arrange this service at least 48 hours in advance.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                How can I check the status of my service order?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#contactFaq">
+                            <div class="accordion-body">
+                                You can check the status of your service order by contacting our service department directly with your service order number. We also provide updates via SMS or email at key stages of the service process, depending on your communication preferences.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="call-to-action">
+    <div class="container text-center">
+        <h2 class="mb-3">Visit Our Showroom</h2>
+        <p class="lead mb-4">Come see our full range of scooters and talk to our experts in person</p>
+        <a href="https://goo.gl/maps/YourGoogleMapsLink" target="_blank" class="btn btn-primary btn-lg">Get Directions</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% if low_stock_items %}
+<div class="list-group list-group-flush inventory-alerts-container" style="max-height: 300px; overflow-y: auto;">
+    {% for item in low_stock_items %}
+    <div class="list-group-item p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="mb-0 font-weight-bold text-danger">{{ item.name }}</h6>
+                <small class="text-muted">Part #: {{ item.part_number }} | Store: {{ item.store }}</small>
+            </div>
+            <div class="text-end">
+                <span class="badge bg-danger">{{ item.current_stock }} / {{ item.reorder_level }}</span>
+            </div>
+        </div>
+        <div class="mt-2">
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-danger" role="progressbar" 
+                     style="width: {{ item.stock_percent }}%;" 
+                     aria-valuenow="{{ item.stock_percent }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-1">
+                <small class="text-danger">{{ item.stock_percent }}% of minimum</small>
+                <a href="{% url 'inventory:parts_update' pk=item.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-shopping-cart"></i> Reorder
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="card-footer bg-dark text-white text-center">
+    <a href="{% url 'analytics:alerts_dashboard' %}" class="text-white text-decoration-none">
+        <i class="fas fa-bell me-1"></i> View All Inventory Alerts
+    </a>
+</div>
+{% else %}
+<div class="alert alert-success m-3">
+    <i class="fas fa-check-circle me-2"></i> 
+    <strong>Excellent!</strong> All inventory items are at adequate stock levels.
+</div>
+<div class="card-footer bg-dark text-white text-center">
+    <a href="{% url 'inventory:parts_list' %}" class="text-white text-decoration-none">
+        <i class="fas fa-boxes me-1"></i> Inventory Management
+    </a>
+</div>
+{% endif %}

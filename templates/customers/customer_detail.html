@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer: {{ customer.get_full_name }}{% endblock %}
+
+{% block page_title %}Customer Details{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group" role="group">
+    <a href="{% url 'customers:customer_list' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Customers
+    </a>
+    <a href="{% url 'customers:customer_update' pk=customer.pk %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edit Customer
+    </a>
+    <a href="{% url 'customers:rental_create' %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> New Rental
+    </a>
+    <a href="{% url 'customers:payment_method_create' customer_id=customer.pk %}" class="btn btn-info">
+        <i class="fas fa-credit-card"></i> Add Payment Method
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <!-- Customer Info -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <h4 class="mb-3">{{ customer.get_full_name }}
+                    {% if customer.is_active %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </h4>
+                
+                <p class="mb-1"><i class="fas fa-envelope me-2"></i> {{ customer.email }}</p>
+                <p class="mb-1"><i class="fas fa-phone me-2"></i> {{ customer.phone }}</p>
+                <p class="mb-1"><i class="fas fa-id-card me-2"></i> {{ customer.driver_license }}</p>
+                <p class="mb-1"><i class="fas fa-birthday-cake me-2"></i> {{ customer.date_of_birth|date:"F d, Y" }}</p>
+                <p class="mb-4"><i class="fas fa-calendar me-2"></i> Customer since {{ customer.date_created|date:"F d, Y" }}</p>
+                
+                <h6>Address</h6>
+                <p>
+                    {{ customer.address }}<br>
+                    {{ customer.city }}, {{ customer.state }} {{ customer.postal_code }}<br>
+                    {{ customer.country }}
+                </p>
+                
+                {% if customer.notes %}
+                <h6>Notes</h6>
+                <p>{{ customer.notes }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Payment Methods -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Payment Methods</h5>
+                <a href="{% url 'customers:payment_method_create' customer_id=customer.pk %}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus"></i> Add
+                </a>
+            </div>
+            <div class="card-body">
+                {% if payment_methods %}
+                    <div class="list-group">
+                        {% for method in payment_methods %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if method.payment_type == 'credit_card' %}
+                                        <i class="fas fa-credit-card me-2"></i>
+                                    {% elif method.payment_type == 'debit_card' %}
+                                        <i class="fas fa-credit-card me-2"></i>
+                                    {% elif method.payment_type == 'paypal' %}
+                                        <i class="fab fa-paypal me-2"></i>
+                                    {% elif method.payment_type == 'cash' %}
+                                        <i class="fas fa-money-bill-wave me-2"></i>
+                                    {% else %}
+                                        <i class="fas fa-wallet me-2"></i>
+                                    {% endif %}
+                                    
+                                    {{ method.get_payment_type_display }}
+                                    {% if method.is_default %}
+                                        <span class="badge bg-info ms-2">Default</span>
+                                    {% endif %}
+                                    
+                                    {% if method.payment_type == 'credit_card' or method.payment_type == 'debit_card' %}
+                                        {% if method.card_number %}
+                                            <small class="d-block text-muted">**** **** **** {{ method.card_number }}</small>
+                                        {% endif %}
+                                        {% if method.expiry_date %}
+                                            <small class="d-block text-muted">Expires: {{ method.expiry_date }}</small>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <a href="{% url 'customers:payment_method_update' pk=method.pk %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-center">No payment methods added</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <!-- Active Rentals -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Active Rentals</h5>
+                <a href="{% url 'customers:rental_create' %}" class="btn btn-sm btn-success">
+                    <i class="fas fa-plus"></i> New Rental
+                </a>
+            </div>
+            <div class="card-body">
+                {% if active_rentals %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Rental #</th>
+                                    <th>Scooter</th>
+                                    <th>Start Date</th>
+                                    <th>Expected Return</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rental in active_rentals %}
+                                    <tr>
+                                        <td>{{ rental.rental_number }}</td>
+                                        <td>{{ rental.scooter.make }} {{ rental.scooter.model }}</td>
+                                        <td>{{ rental.start_date|date:"M d, Y H:i" }}</td>
+                                        <td>{{ rental.expected_end_date|date:"M d, Y H:i" }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if rental.status == 'active' %}success{% elif rental.status == 'overdue' %}danger{% else %}secondary{% endif %}">
+                                                {{ rental.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{% url 'customers:rental_detail' pk=rental.pk %}" class="btn btn-info">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'customers:rental_complete' pk=rental.pk %}" class="btn btn-success">
+                                                    <i class="fas fa-check"></i> Complete
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center">No active rentals</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Rental History -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Rental History</h5>
+            </div>
+            <div class="card-body">
+                {% if completed_rentals %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Rental #</th>
+                                    <th>Scooter</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Total Cost</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rental in completed_rentals %}
+                                    <tr>
+                                        <td>{{ rental.rental_number }}</td>
+                                        <td>{{ rental.scooter.make }} {{ rental.scooter.model }}</td>
+                                        <td>{{ rental.start_date|date:"M d, Y" }}</td>
+                                        <td>{{ rental.end_date|date:"M d, Y"|default:"N/A" }}</td>
+                                        <td>${{ rental.total_amount|default:"0.00" }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if rental.status == 'completed' %}success{% elif rental.status == 'cancelled' %}secondary{% else %}warning{% endif %}">
+                                                {{ rental.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'customers:rental_detail' pk=rental.pk %}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center">No rental history</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

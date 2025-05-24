@@ -1,0 +1,89 @@
+/* Custom styles for Django Project Analyzer */
+
+/* Code container styling */
+.code-container {
+    border-radius: 0 0 0.25rem 0.25rem;
+    overflow: auto;
+    max-height: 70vh;
+}
+
+.code-container pre {
+    margin: 0;
+    padding: 0;
+}
+
+.code-container code {
+    padding: 1rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* File explorer styling */
+.directory-header {
+    cursor: pointer;
+}
+
+.directory-header:hover {
+    background-color: var(--bs-dark);
+}
+
+.directory-header .fa-chevron-down {
+    transition: transform 0.2s;
+}
+
+.directory-header[aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* Customize scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bs-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bs-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bs-primary);
+}
+
+/* Cards with fixed height for consistent layout */
+.equal-height-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.equal-height-card .card-body {
+    flex: 1 1 auto;
+}
+
+/* Footer styling */
+.footer {
+    margin-top: auto;
+    padding: 1rem 0;
+    background-color: var(--bs-dark);
+}
+
+/* Additional spacing for components */
+.accordion-body {
+    padding: 0.5rem;
+}
+
+/* Make the file explorer fixed position on large screens */
+@media (min-width: 992px) {
+    .sticky-sidebar {
+        position: sticky;
+        top: 1rem;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+}

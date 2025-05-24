@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Service Checklist - Job Card #{{ job_card.job_card_number }}{% endblock %}
+
+{% block page_title %}Service Checklist{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group" role="group">
+    <a href="{% url 'service:job_card_detail' pk=job_card.pk %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Job Card
+    </a>
+    <a href="{% url 'service:add_checklist_item' pk=job_card.pk %}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Add Item
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Service Checklist for {{ job_card.scooter.make }} {{ job_card.scooter.model }} ({{ job_card.scooter.vin }})</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%">Completed</th>
+                                <th style="width: 50%">Item</th>
+                                <th style="width: 40%">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if checklist_items %}
+                                {% for item in checklist_items %}
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" name="item_{{ item.id }}" id="item_{{ item.id }}" class="form-check-input" {% if item.is_checked %}checked{% endif %}>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <label for="item_{{ item.id }}" class="form-check-label">{{ item.item_name }}</label>
+                                        </td>
+                                        <td>
+                                            <textarea name="notes_{{ item.id }}" class="form-control" rows="1">{{ item.notes }}</textarea>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No checklist items found. Add items to get started.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Checklist
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

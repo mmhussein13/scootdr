@@ -1,0 +1,637 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Inventory Management{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'inventory:purchase_list' %}" class="btn btn-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Purchases
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="{{ form.invoice_number.id_for_label }}" class="form-label">Invoice Number:</label>
+                            {{ form.invoice_number }}
+                            {% if form.invoice_number.errors %}
+                                <div class="text-danger">{{ form.invoice_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.supplier.id_for_label }}" class="form-label">Supplier:</label>
+                            {{ form.supplier }}
+                            {% if form.supplier.errors %}
+                                <div class="text-danger">{{ form.supplier.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.store.id_for_label }}" class="form-label">Store:</label>
+                            {{ form.store }}
+                            {% if form.store.errors %}
+                                <div class="text-danger">{{ form.store.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">{{ form.store.help_text }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="{{ form.invoice_date.id_for_label }}" class="form-label">Invoice Date:</label>
+                            {{ form.invoice_date }}
+                            {% if form.invoice_date.errors %}
+                                <div class="text-danger">{{ form.invoice_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.status.id_for_label }}" class="form-label">Status:</label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date:</label>
+                            {{ form.due_date }}
+                            {% if form.due_date.errors %}
+                                <div class="text-danger">{{ form.due_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.total_amount.id_for_label }}" class="form-label">Total Amount (R):</label>
+                            {{ form.total_amount }}
+                            {% if form.total_amount.errors %}
+                                <div class="text-danger">{{ form.total_amount.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">This will be calculated automatically</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.amount_paid.id_for_label }}" class="form-label">Amount Paid (R):</label>
+                            {{ form.amount_paid }}
+                            {% if form.amount_paid.errors %}
+                                <div class="text-danger">{{ form.amount_paid.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Enter amount already paid (defaults to 0)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Notes:</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Purchase Items</h5>
+                        <button type="button" class="btn btn-sm btn-success" id="add-item-row">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    {{ formset.management_form }}
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Part</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price (R)</th>
+                                    <th>Total Price (R)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-tbody">
+                                {% for form in formset %}
+                                    <tr class="item-form">
+                                        <td>
+                                            {% for hidden in form.hidden_fields %}
+                                                {{ hidden }}
+                                            {% endfor %}
+                                            {{ form.part }}
+                                            {{ form.store.as_hidden }}
+                                            {% if form.part.errors %}
+                                                <div class="text-danger">{{ form.part.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.quantity }}
+                                            {% if form.quantity.errors %}
+                                                <div class="text-danger">{{ form.quantity.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.unit_price }}
+                                            {% if form.unit_price.errors %}
+                                                <div class="text-danger">{{ form.unit_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ form.total_price }}
+                                            {% if form.total_price.errors %}
+                                                <div class="text-danger">{{ form.total_price.errors }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                {% if form.instance.pk %}
+                                                    {{ form.DELETE }}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-danger" onclick="removeItemRow(this)">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                                <button type="button" class="btn btn-sm btn-success add-row-btn">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Purchase
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize supplier dropdown with Select2
+    $('.select2-basic').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
+    });
+    
+    // Initialize part selectors with searchable options
+    initializePurchasePartSelectors();
+    
+    // Handle the Add Item button click
+    $('#add-item-row').on('click', function() {
+        addNewPurchaseRow();
+        return false;
+    });
+    
+    // Add click event handlers for inline plus buttons
+    $(document).on('click', '.add-row-btn', function() {
+        addNewPurchaseRow();
+        return false;
+    });
+
+    // Add input event listeners for quantity fields to auto-calculate totals
+    setupQuantityListeners();
+    
+    // Add change listeners to part selects to fetch prices
+    setupPartSelectListeners();
+    
+    // Handle store selection change to auto-populate item stores and filter parts
+    $('#id_store').on('change', function() {
+        const selectedStoreId = this.value;
+        if (selectedStoreId) {
+            // Update all store dropdowns in purchase items
+            $('select[name*="-store"]').each(function() {
+                $(this).val(selectedStoreId);
+            });
+            
+            // Update parts in all existing rows
+            updateAllPartSelectors(selectedStoreId);
+        }
+    });
+    
+    // Handle individual store changes in items
+    $(document).on('change', 'select[name*="-store"]', function() {
+        const selectedStoreId = this.value;
+        const row = $(this).closest('tr');
+        const partSelect = row.find('select[name*="-part"]');
+        
+        if (selectedStoreId) {
+            updatePartSelector(partSelect, selectedStoreId);
+        }
+    });
+});
+
+// Function to initialize part selectors with Select2
+function initializePurchasePartSelectors() {
+    console.log('Initializing Select2 for part selectors');
+    $('select[name*="-part"]').not('.select2-hidden-accessible').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        placeholder: 'Type Part Number or Name to search',
+        allowClear: true,
+        language: {
+            noResults: function() {
+                return "No parts found - try a different search term";
+            }
+        }
+    });
+}
+
+// Add input event listeners to quantity and unit price fields to auto-calculate totals
+function setupQuantityListeners() {
+    document.querySelectorAll('input[name*="-quantity"], input[name*="-unit_price"]').forEach(input => {
+        input.addEventListener('input', function() {
+            updateRowTotal(this.closest('tr'));
+            updatePurchaseTotal();
+        });
+    });
+}
+
+// Update the total price for a row based on quantity and unit price
+function updateRowTotal(row) {
+    const quantityInput = row.querySelector('input[name*="-quantity"]');
+    const unitPriceInput = row.querySelector('input[name*="-unit_price"]');
+    const totalPriceInput = row.querySelector('input[name*="-total_price"]');
+    
+    if (quantityInput && unitPriceInput && totalPriceInput) {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const unitPrice = parseFloat(unitPriceInput.value) || 0;
+        const total = (quantity * unitPrice).toFixed(2);
+        totalPriceInput.value = total;
+        console.log(`Updated row total: ${quantity} × ${unitPrice} = ${total}`);
+    }
+}
+
+// Update the total purchase amount by summing all item totals
+function updatePurchaseTotal() {
+    let grandTotal = 0;
+    const totalPriceInputs = document.querySelectorAll('input[name*="-total_price"]');
+    
+    totalPriceInputs.forEach(input => {
+        const value = parseFloat(input.value) || 0;
+        grandTotal += value;
+    });
+    
+    const totalAmountInput = document.querySelector('#id_total_amount');
+    if (totalAmountInput) {
+        totalAmountInput.value = grandTotal.toFixed(2);
+        console.log(`Updated purchase total: ${grandTotal.toFixed(2)}`);
+    }
+}
+
+// Add change listeners to part select dropdowns to fetch prices
+function setupPartSelectListeners() {
+    document.querySelectorAll('select[name*="-part"]').forEach(select => {
+        select.addEventListener('change', function() {
+            const partId = this.value;
+            const row = this.closest('tr');
+            const unitPriceInput = row.querySelector('input[name*="-unit_price"]');
+            
+            if (partId && unitPriceInput) {
+                fetchPartDetails(partId, unitPriceInput);
+            }
+        });
+    });
+}
+
+// Function to fetch part details and auto-populate unit price
+function fetchPartDetails(partId, unitPriceInput) {
+    if (!partId) {
+        // If no part is selected, clear the unit price
+        unitPriceInput.value = '';
+        return;
+    }
+    
+    // Fetch part details from the API
+    fetch(`/inventory/api/parts/${partId}/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Set the unit price from the response
+            unitPriceInput.value = data.unit_price;
+            console.log(`Auto-populated unit price: ${data.unit_price} for part ID: ${partId}`);
+            
+            // Update the total price
+            updateRowTotal(unitPriceInput.closest('tr'));
+        })
+        .catch(error => {
+            console.error('Error fetching part details:', error);
+        });
+}
+
+// Function to add a new row when clicking the inline plus button
+function addNewRow(button) {
+    console.log('addNewRow called for button:', button);
+    const currentRow = button.closest('tr');
+    const tbody = currentRow.parentElement;
+    const newRow = currentRow.cloneNode(true);
+    
+    // Clean up any Select2 instances
+    newRow.querySelectorAll('select').forEach(select => {
+        const selectId = select.id;
+        if (selectId) {
+            // Destroy any existing Select2 for this element
+            try {
+                $('#' + selectId).select2('destroy');
+            } catch (e) {
+                console.log('Select2 not initialized for', selectId);
+            }
+        }
+    });
+    
+    // Clear the input values in the new row
+    newRow.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+            input.value = '';
+        }
+    });
+    
+    // Clear select values - need to do this differently for Select2
+    newRow.querySelectorAll('select').forEach(select => {
+        // Reset to default option
+        select.selectedIndex = 0;
+        // Remove any Select2 containers and data
+        $(select).siblings('.select2-container').remove();
+        
+        // If this is a store select, set it to the main store value
+        if (select.name && select.name.includes('-store')) {
+            const mainStore = document.getElementById('id_store');
+            if (mainStore && mainStore.value) {
+                select.value = mainStore.value;
+            }
+        }
+    });
+    
+    // Update the form indices
+    // Find the form count field by looking for any input containing "TOTAL_FORMS" in the name
+    const totalForms = document.querySelector('input[name*="TOTAL_FORMS"]');
+    if (!totalForms) {
+        console.error('Could not find TOTAL_FORMS input');
+        return false;
+    }
+    const currentIndex = parseInt(totalForms.value);
+    console.log('Current TOTAL_FORMS value:', currentIndex);
+    totalForms.value = currentIndex + 1;
+    console.log('Updated TOTAL_FORMS to:', totalForms.value);
+    
+    // Update the form IDs and names in the new row
+    newRow.querySelectorAll('input, select, textarea').forEach(element => {
+        const name = element.getAttribute('name');
+        if (name) {
+            // For names like "purchaseitem_set-0-store"
+            if (name.includes('-')) {
+                const parts = name.split('-');
+                if (parts.length >= 2) {
+                    const prefix = parts[0];
+                    parts[1] = currentIndex.toString();
+                    const newName = parts.join('-');
+                    element.setAttribute('name', newName);
+                    console.log('Updated name from', name, 'to', newName);
+                }
+            }
+            
+            if (element.id) {
+                const id = element.getAttribute('id');
+                if (id.includes('-')) {
+                    const parts = id.split('-');
+                    if (parts.length >= 2) {
+                        parts[1] = currentIndex.toString();
+                        const newId = parts.join('-');
+                        element.setAttribute('id', newId);
+                        console.log('Updated id from', id, 'to', newId);
+                    }
+                }
+            }
+        }
+    });
+    
+    // Add the new row after the current row
+    tbody.insertBefore(newRow, currentRow.nextSibling);
+    
+    // Clear any error messages in the new row
+    newRow.querySelectorAll('.text-danger').forEach(error => {
+        error.remove();
+    });
+    
+    // Re-initialize Select2 for the new row
+    setTimeout(function() {
+        initializePurchasePartSelectors();
+        setupPartSelectListeners();
+        setupQuantityListeners();
+    }, 50);
+    
+    console.log('New row added successfully');
+    return false; // Prevent default button behavior
+}
+
+// Function to add a new purchase row identical to the first row
+function addNewPurchaseRow() {
+    console.log('Adding new purchase row...');
+    
+    // Get the first row as our template
+    const firstRow = document.querySelector('#items-tbody tr.item-form');
+    if (!firstRow) {
+        console.error('Could not find first row template');
+        return false;
+    }
+    
+    // Clone the first row
+    const newRow = firstRow.cloneNode(true);
+    
+    // Get current form count
+    const totalForms = document.querySelector('input[name*="TOTAL_FORMS"]');
+    if (!totalForms) {
+        console.error('Could not find TOTAL_FORMS input');
+        return false;
+    }
+    
+    const currentIndex = parseInt(totalForms.value);
+    
+    // Clean up any existing Select2 instances in the new row
+    newRow.querySelectorAll('select').forEach(select => {
+        $(select).siblings('.select2-container').remove();
+    });
+    
+    // Clear the input values in the new row
+    newRow.querySelectorAll('input').forEach(input => {
+        if (input.type !== 'hidden' && !input.name.includes('DELETE')) {
+            input.value = '';
+        }
+    });
+    
+    // Reset select values and set store to main store value
+    newRow.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+        
+        // If this is a store select, set it to the main store value
+        if (select.name && select.name.includes('-store')) {
+            const mainStore = document.getElementById('id_store');
+            if (mainStore && mainStore.value) {
+                select.value = mainStore.value;
+            }
+        }
+    });
+    
+    // Update form indices for all form elements
+    newRow.querySelectorAll('input, select, textarea').forEach(element => {
+        const name = element.getAttribute('name');
+        if (name && name.includes('-')) {
+            const parts = name.split('-');
+            if (parts.length >= 2) {
+                parts[1] = currentIndex.toString();
+                const newName = parts.join('-');
+                element.setAttribute('name', newName);
+            }
+        }
+        
+        const id = element.getAttribute('id');
+        if (id && id.includes('-')) {
+            const parts = id.split('-');
+            if (parts.length >= 2) {
+                parts[1] = currentIndex.toString();
+                const newId = parts.join('-');
+                element.setAttribute('id', newId);
+            }
+        }
+    });
+    
+    // Update TOTAL_FORMS count
+    totalForms.value = currentIndex + 1;
+    
+    // Add the new row to the table
+    document.getElementById('items-tbody').appendChild(newRow);
+    
+    // Initialize Select2 for the new row
+    newRow.querySelectorAll('select').forEach(select => {
+        if (select.name && select.name.includes('-part')) {
+            $(select).select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: 'Type Part Number or Name to search',
+                allowClear: true
+            });
+        } else {
+            $(select).select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                allowClear: true
+            });
+        }
+    });
+    
+    // Set up event listeners for the new row
+    setupRowEventListeners(newRow);
+    
+    // If a store is already selected, update the parts for this new row
+    const selectedStoreId = document.getElementById('id_store').value;
+    if (selectedStoreId) {
+        const partSelect = newRow.querySelector('select[name*="-part"]');
+        if (partSelect) {
+            updatePartSelector($(partSelect), selectedStoreId);
+        }
+    }
+    
+    return true;
+}
+
+// Function to set up event listeners for a row
+function setupRowEventListeners(row) {
+    // Quantity change listener
+    const quantityInput = row.querySelector('input[name*="-quantity"]');
+    if (quantityInput) {
+        quantityInput.addEventListener('input', function() {
+            updateRowTotal(row);
+        });
+    }
+    
+    // Part select change listener
+    const partSelect = row.querySelector('select[name*="-part"]');
+    if (partSelect) {
+        partSelect.addEventListener('change', function() {
+            const partId = this.value;
+            const unitPriceInput = row.querySelector('input[name*="-unit_price"]');
+            
+            if (partId && unitPriceInput) {
+                fetchPartDetails(partId, unitPriceInput);
+            }
+        });
+    }
+}
+
+// Function to update a single part selector based on store
+function updatePartSelector(partSelect, storeId) {
+    if (!storeId) {
+        return;
+    }
+    
+    // Fetch parts for the selected store
+    fetch(`/inventory/api/stores/${storeId}/parts/`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Clear existing options
+            partSelect.empty();
+            
+            // Add default option
+            partSelect.append('<option value="">Select a part...</option>');
+            
+            // Add parts from the store
+            data.parts.forEach(part => {
+                partSelect.append(`<option value="${part.id}">${part.display_name}</option>`);
+            });
+            
+            // Refresh Select2
+            partSelect.trigger('change');
+        })
+        .catch(error => {
+            console.error('Error fetching parts for store:', error);
+        });
+}
+
+// Function to update all part selectors when store changes
+function updateAllPartSelectors(storeId) {
+    $('select[name*="-part"]').each(function() {
+        updatePartSelector($(this), storeId);
+    });
+}
+
+// Function to remove an item row
+function removeItemRow(button) {
+    const row = button.closest('tr');
+    
+    // Check if there's a DELETE checkbox (for existing items)
+    const deleteCheckbox = row.querySelector('input[name$="-DELETE"]');
+    if (deleteCheckbox) {
+        // If checkbox exists (for existing items), mark it for deletion
+        deleteCheckbox.checked = true;
+        // Hide the row
+        row.style.display = 'none';
+    } else {
+        // If there's no DELETE checkbox (for new items), just remove it from the DOM
+        row.remove();
+    }
+    
+    return false; // Prevent default
+}
+</script>
+{% endblock %}

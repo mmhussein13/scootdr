@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}User Settings - Scooter Rental Management System{% endblock %}
+
+{% block page_title %}User Settings{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Application Settings</h5>
+        
+        <form>
+            <div class="mb-3">
+                <label class="form-label">Default Currency</label>
+                <select class="form-select" disabled>
+                    <option selected>Rands (R)</option>
+                    <option>South African Rand (R)</option>
+                    <option>Euro (€)</option>
+                    <option>British Pound (£)</option>
+                </select>
+                <div class="form-text">The currency used throughout the application.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Default Store Location</label>
+                <select class="form-select" disabled>
+                    <option selected>All Stores</option>
+                    <option>Main Store</option>
+                    <option>Downtown Branch</option>
+                    <option>Airport Branch</option>
+                </select>
+                <div class="form-text">The default store to filter inventory and rental items.</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="darkMode" checked disabled>
+                <label class="form-check-label" for="darkMode">Use Dark Mode</label>
+                <div class="form-text">Toggle between light and dark color schemes.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Items Per Page</label>
+                <select class="form-select" disabled>
+                    <option>10</option>
+                    <option selected>25</option>
+                    <option>50</option>
+                    <option>100</option>
+                </select>
+                <div class="form-text">Number of items to display per page in lists.</div>
+            </div>
+            
+            <hr>
+            
+            <h5 class="card-title">Notification Settings</h5>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="emailNotifications" checked disabled>
+                <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                <div class="form-text">Receive email notifications for important events.</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="lowStockAlerts" checked disabled>
+                <label class="form-check-label" for="lowStockAlerts">Low Stock Alerts</label>
+                <div class="form-text">Receive alerts when inventory items reach their reorder level.</div>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="rentalReminders" checked disabled>
+                <label class="form-check-label" for="rentalReminders">Rental Due Reminders</label>
+                <div class="form-text">Receive reminders for upcoming rental returns.</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" disabled>Save Settings</button>
+            <div class="form-text mt-2">Note: Settings functionality is currently in development and will be available in a future update.</div>
+        </form>
+    </div>
+</div>
+{% endblock %}

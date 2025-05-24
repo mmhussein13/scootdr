@@ -1,0 +1,92 @@
+/**
+ * Scooter Rental Management System - Icon Colors
+ * This CSS file ensures consistent icon coloring regardless of hover states
+ * Added !important to all rules to override any conflicting styles
+ */
+
+/* 
+ * Base icon styles - ensure consistency across all buttons and elements
+ */
+.fas, .far, .fab, .fa, i {
+  font-family: "Font Awesome 6 Free", sans-serif !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  -webkit-font-smoothing: antialiased !important;
+  display: inline-block !important;
+  font-style: normal !important;
+  font-variant: normal !important;
+  text-rendering: auto !important;
+  line-height: 1 !important;
+}
+
+/* Fix for buttons with colored icons */
+.btn-primary i { color: white !important; }
+.btn-success i { color: white !important; }
+.btn-info i { color: white !important; }
+.btn-warning i { color: #000 !important; }
+.btn-danger i { color: white !important; }
+.btn-secondary i { color: white !important; }
+.btn-light i { color: #000 !important; }
+.btn-dark i { color: white !important; }
+
+/* Make sure buttons maintain their color on all states */
+.btn:hover i, .btn:focus i, .btn:active i {
+  color: inherit !important;
+}
+
+/* Text colors for icons with higher specificity */
+html body .text-primary, html body .text-primary i { color: #0d6efd !important; }
+html body .text-success, html body .text-success i { color: #198754 !important; }
+html body .text-info, html body .text-info i { color: #0dcaf0 !important; }
+html body .text-warning, html body .text-warning i { color: #ffc107 !important; }
+html body .text-danger, html body .text-danger i { color: #dc3545 !important; }
+html body .text-secondary, html body .text-secondary i { color: #6c757d !important; }
+html body .text-light, html body .text-light i { color: #f8f9fa !important; }
+html body .text-dark, html body .text-dark i { color: #212529 !important; }
+
+/* Badges with high specificity */
+html body .badge-primary i, html body .bg-primary i { color: white !important; }
+html body .badge-success i, html body .bg-success i { color: white !important; }
+html body .badge-info i, html body .bg-info i { color: white !important; }
+html body .badge-warning i, html body .bg-warning i { color: #000 !important; }
+html body .badge-danger i, html body .bg-danger i { color: white !important; }
+html body .badge-secondary i, html body .bg-secondary i { color: white !important; }
+html body .badge-light i, html body .bg-light i { color: #000 !important; }
+html body .badge-dark i, html body .bg-dark i { color: white !important; }
+
+/* Status-specific colors with high specificity */
+html body .status-active i, html body .status-available i { color: #198754 !important; }
+html body .status-completed i, html body .status-reserved i { color: #0d6efd !important; }
+html body .status-cancelled i, html body .status-unavailable i { color: #dc3545 !important; }
+html body .status-overdue i, html body .status-maintenance i { color: #ffc107 !important; }
+html body .status-pending i { color: #6c757d !important; }
+
+/* Prevent transitions and animations */
+i, .fas, .far, .fab, .fa {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Super high specificity to override any hover/active states */
+html body a i,
+html body button i,
+html body .btn i,
+html body .nav-link i,
+html body .card i,
+html body span i,
+html body div i {
+  color: inherit !important;
+  transition: none !important;
+}
+
+/* Ensure colors stay consistent on all element states */
+html body a:hover i,
+html body a:focus i,
+html body a:active i,
+html body button:hover i,
+html body button:focus i,
+html body button:active i,
+html body .btn:hover i,
+html body .btn:focus i,
+html body .btn:active i {
+  color: inherit !important;
+}
